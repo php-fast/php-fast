@@ -1,0 +1,49 @@
+#!/usr/bin/env php
+<?php
+require __DIR__ . '/vendor/autoload.php';
+use System\Framework\TableCommand;
+
+define('ROOT_PATH', realpath(__DIR__));
+require_once __DIR__ . '/system/helpers/core_helper.php';
+
+function loadDatabaseDriver($driver, $config) {
+    $driverClass = '\\System\\Drivers\\Database\\' . ucfirst($driver) . 'Driver';
+    if (class_exists($driverClass)) {
+        return new $driverClass($config);
+    } else {
+        throw new \Exception("Database driver '{$driver}' không tồn tại.");
+    }
+}
+
+// Lấy đối số từ CLI
+$command = $argv[1] ?? null;
+$subCommand = $argv[2] ?? null; // Dùng cho các lệnh con nếu có
+
+// Kiểm tra nếu không có lệnh
+if (!$command) {
+    echo "Chạy lệnh: php framework table\n";
+    exit(1);
+}
+if (!$subCommand) {
+    echo "Vui lòng nhập tên Table\n";
+    exit(1);
+}
+
+// Tạo đối tượng kết nối cơ sở dữ liệu
+$configdb = config('db');  // Sử dụng config từ file config.php với key 'db'
+
+$dbConnection = loadDatabaseDriver($configdb['db_driver'], $configdb);
+unset($configdb);
+
+// Xử lý lệnh từ terminal
+switch ($command) {
+    case 'table':
+        // Khởi chạy artisan command để cập nhật bảng
+        $TableCommand = new TableCommand($dbConnection);
+        $TableCommand->handle($subCommand);
+        break;
+
+    default:
+        echo "Lệnh không hợp lệ. Các lệnh hợp lệ: database\n";
+        break;
+}

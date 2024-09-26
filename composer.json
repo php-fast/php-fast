@@ -1,0 +1,21 @@
+{
+    "name": "phpfast/phpfast",
+    "description": "PHP Fast",
+    "license": "MIT",
+    "version": "1.0.1",
+    "autoload": {
+        "psr-4": {
+            "App\\": "application/",
+            "System\\": "system/"
+        }
+    },
+    "authors": [
+        {
+            "name": "phpfast.net"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.4"
+    }
+}
