@@ -12,24 +12,24 @@ This framework includes all the essential functionalities required for web appli
 2. [Installation](#2-installation)
     - Using Github
     - Manual Installation
-3. [Directory Structure](#directory-structure)
+3. [Directory Structure](#3-directory-structure)
     - application/
     - public/
     - system/
     - vendor/
     - writeable/
-4. [Configuration](#configuration)
+4. [Configuration](#4-configuration)
     - Configuration Files
     - Environment Variables
-5. [Command-Line Interface (`php init`)](#command-line-interface-php-init)
-    - [Database Synchronization (`table`)](#database-synchronization-table)
-    - [Create Controller (`controllers`)](#create-controller-controllers)
-    - [Create Model (`models`)](#create-model-models)
-6. [Routing](#routing)
+5. [Command-Line Interface (`php init`)](#5-command-line-interface-php-init)
+    - [Database Synchronization (`table`)]
+    - [Create Controller (`controllers`)]
+    - [Create Model (`models`)]
+6. [Routing](#6-routing)
     - Defining Routes
     - Dynamic Routing
     - Middleware in Routes
-7. [Creating a Controller](#creating-a-controller)
+7. [Creating a Controller](#7-creating-a-controller)
 8. [Creating a Model](#creating-a-model)
 9. [Creating Middleware](#creating-middleware)
 10. [Views and Templates](#views-and-templates)
