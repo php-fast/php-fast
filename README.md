@@ -131,101 +131,80 @@ After completing these steps, PHP-Fast is ready for development. You can now con
 
 ## 3. Directory Structure
 
-PHP-Fast follows a well-organized directory structure to keep the application clean and modular. Here's a breakdown of each directory and its purpose:
+PHP-Fast follows a well-organized directory structure to keep the application clean and modular. Here's a detailed breakdown of each directory and its purpose:
 
-### application/
-Contains all the application-specific files, such as configurations, controllers, models, views, and routes.
+ROOT
+├── application/                  # Application-specific files
+│   ├── config/                   # Configuration files
+│   │   └── config.php            # Main configuration file
+│   ├── controllers/              # Controllers for handling requests
+│   │   ├── Api/                  # API-related controllers
+│   │   │   └── UsersController.php # Controller for user-related API
+│   │   └── HomeController.php    # Main controller for web requests
+│   ├── middlewares/              # Custom middleware for request handling
+│   │   ├── AuthMiddleware.php    # Handles authentication
+│   │   └── PermissionMiddleware.php # Handles user permissions
+│   ├── models/                   # Models for database interactions
+│   │   └── UsersModel.php        # Model for interacting with the users' table
+│   ├── routes/                   # Route definitions
+│   │   ├── api.php               # API route definitions
+│   │   └── web.php               # Web route definitions
+│   └── views/                    # View files (HTML templates)
+│       ├── default/              # Default view directory
+│       │   ├── component/        # Reusable components (e.g., header, footer)
+│       │   │   ├── footer.php    # Footer component
+│       │   │   └── header.php    # Header component
+│       │   ├── home/             # Views for the HomeController
+│       │   │   ├── home.php      # Homepage controller file layout
+│       │   ├── 404.php           # Custom 404 error page
+│       │   └── themes.php        # Layout file for the application
+│
+├── public/                       # Publicly accessible directory (document root)
+│   ├── .htaccess                 # Apache configuration for URL rewriting
+│   └── index.php                 # Entry point for all HTTP requests
+│
+├── system/                       # Core framework files
+│   ├── commands/                 # Command-line tools
+│   │   ├── ControllersCommand.php # CLI command to create controllers
+│   │   ├── ModelsCommand.php     # CLI command to create models
+│   │   └── TableCommand.php      # CLI command to sync database tables
+│   ├── core/                     # Core system files of the framework
+│   │   ├── AppException.php      # Custom exception handler
+│   │   ├── BaseController.php    # Base class for all controllers
+│   │   ├── BaseModel.php         # Base class for all models
+│   │   ├── Bootstrap.php         # Framework initialization and routing
+│   │   ├── Middleware.php        # Base class for middleware
+│   │   └── Router.php            # Handles routing and directs requests
+│   ├── drivers/                  # Drivers for handling caching and databases
+│   │   ├── cache/                # Cache handling
+│   │   │   ├── Cache.php         # Base cache class
+│   │   │   ├── FilesCache.php    # File-based caching implementation
+│   │   │   └── RedisCache.php    # Redis-based caching implementation
+│   │   ├── database/             # Database handling
+│   │   │   ├── Database.php      # Base database class
+│   │   │   ├── MysqlDriver.php   # MySQL-specific database driver
+│   │   │   └── PostgresqlDriver.php # PostgreSQL-specific database driver
+│   ├── helpers/                  # Helper functions for various tasks
+│   │   ├── core_helper.php       # Core helper functions
+│   │   ├── security_helper.php   # Security-related helper functions
+│   │   └── uri_helper.php        # URL-related helper functions
+│   └── libraries/                # Common system libraries
+│       ├── Logger.php            # Logging utility
+│       ├── Monitor.php           # Performance monitoring utility
+│       ├── Render.php            # View rendering and layout handling
+│       ├── Security.php          # Security functions
+│       └── Session.php           # Session management
+│
+├── vendor/                       # Composer-installed third-party libraries
+│   ├── composer/
+│   │   └── autoload.php          # Composer autoloader
+│
+├── writeable/                    # Writable directory for logs, uploads, etc.
+│   ├── logs/
+│   │   └── logger.log            # Log file for application logs
+│
+├── composer.json                 # Composer file for managing dependencies
+└── init                          # Command-line interface script
 
-- **config/**
-  - `config.php`: Main configuration file for the application.
+This directory structure provides a clear overview of where different types of files and functionalities are located in the PHP-Fast framework.
 
-- **controllers/**
-  - **Api/**: Directory for API-related controllers.
-    - `UsersController.php`: Controller to handle user-related API endpoints.
-  - `HomeController.php`: Main controller for handling web-based requests.
-
-- **middlewares/**
-  - `AuthMiddleware.php`: Middleware for handling authentication logic.
-  - `PermissionMiddleware.php`: Middleware for handling user permissions.
-
-- **models/**
-  - `UsersModel.php`: Model to interact with the users' data in the database.
-
-- **routes/**
-  - `api.php`: Defines API routes for the application.
-  - `web.php`: Defines web routes for the application.
-
-- **views/**
-  - **default/**: Default directory for views, structured to support components, pages, and layouts.
-    - **component/**: Reusable components that can be included in multiple views.
-      - `footer.php`: Footer component.
-      - `header.php`: Header component.
-    - **home/**: Directory corresponding to the `HomeController`.
-      - `add_user.php`: View for adding a user.
-      - `edit_user.php`: View for editing a user.
-      - `home.php`: Homepage view.
-      - `view_user.php`: View for displaying user details.
-    - `404.php`: Custom 404 error page.
-    - `themes.php`: Layout file for the application interface.
-
-### public/
-The document root of the application. This directory contains the front controller and other assets like stylesheets, JavaScript files, and images.
-
-- `.htaccess`: Apache configuration file for URL rewriting.
-- `index.php`: The entry point for all HTTP requests, bootstraps the framework.
-
-### system/
-Holds the core framework files, commands, drivers, helpers, and libraries.
-
-- **commands/**: Contains command-line tools for the framework.
-  - `ControllersCommand.php`: Command for creating controllers via CLI.
-  - `ModelsCommand.php`: Command for creating models via CLI.
-  - `TableCommand.php`: Command for synchronizing database tables.
-
-- **core/**: Core system files of the framework.
-  - `AppException.php`: Custom exception handler for the application.
-  - `BaseController.php`: The base class that all controllers extend.
-  - `BaseModel.php`: The base class that all models extend.
-  - `Bootstrap.php`: Initializes the framework and handles routing.
-  - `Middleware.php`: Base middleware class for creating custom middleware.
-  - `Router.php`: Handles routing and directs requests to appropriate controllers.
-
-- **drivers/**: Drivers for handling caching and database interactions.
-  - **cache/**: Handles caching mechanisms.
-    - `Cache.php`: Base cache class.
-    - `FilesCache.php`: Cache implementation using file storage.
-    - `RedisCache.php`: Cache implementation using Redis.
-  - **database/**: Handles database queries and connections.
-    - `Database.php`: Base database class.
-    - `MysqlDriver.php`: MySQL-specific database driver.
-    - `PostgresqlDriver.php`: PostgreSQL-specific database driver.
-
-- **helpers/**: Contains helper functions to simplify common tasks.
-  - `core_helper.php`: Core helper functions used throughout the framework.
-  - `security_helper.php`: Functions for handling security and data sanitization.
-  - `uri_helper.php`: Functions for handling URL manipulations.
-
-- **libraries/**: Commonly used libraries within the system.
-  - `Logger.php`: Handles logging functionality.
-  - `Monitor.php`: Tracks application performance metrics.
-  - `Render.php`: Handles view rendering and layouts.
-  - `Security.php`: Manages security-related tasks.
-  - `Session.php`: Manages user sessions.
-
-### vendor/
-Contains all the third-party libraries installed via Composer.
-
-- **composer/**: Holds the Composer autoloader and dependency files.
-  - `autoload.php`: Automatically loads classes and files from the `vendor/` directory.
-
-### writeable/
-A writable directory used for storing logs, file uploads, and other generated files.
-
-- **logs/**
-  - `logger.log`: Log file for recording application logs.
-
-### Root Files
-- `composer.json`: Composer file for managing dependencies.
-- `init`: Command-line interface script for generating controllers, models, and database tables.
-
-This structured organization allows developers to easily navigate through the framework, manage application logic, and customize components as needed.
