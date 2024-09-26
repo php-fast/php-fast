@@ -61,7 +61,7 @@ This framework includes all the essential functionalities required for web appli
 18. [Contributing](#18-contributing)
     - How to Contribute
     - Code of Conduct
-19. [License](#19-license)
+
 
 ## 1. Introduction
 
@@ -533,6 +533,44 @@ This command will create a new model file in the application/models directory.
 ```bash
 php init models users
 ```
+
+In this section, we will walk through the `BaseModel` class, which provides the fundamental database operations and utilities for other models in the PHP-Fast framework. The `BaseModel` class defines various methods that enable database interactions such as querying data, inserting, updating, deleting, and more.
+
+### Explanation of Key Methods
+
+1. **`__construct()`**: Initializes the database connection using configurations from `config.php`. Loads the appropriate database driver (e.g., MySQL, PostgreSQL) using the `loadDatabaseDriver` method.
+
+2. **`loadDatabaseDriver($driver, $config)`**: Loads the specified database driver. Throws an exception if the driver class does not exist.
+
+3. **`_schema()`**: Defines the schema for the model. Can be overridden in child classes.
+
+4. **`_table()`**: Returns the table name used by the model. Should be overridden in the child model class.
+
+5. **`_columns()`**: Returns an array of columns that are defined as fillable in the model.
+
+6. **`fill($data)`**: Filters the input data to include only the fillable columns and excludes the guarded columns. Ensures that only allowed data is passed to the database.
+
+7. **`row($table, $where, $params)`**: Fetches a single row from the database based on the specified conditions.
+
+8. **`list($table, $where, $params, $orderBy, $limit, $offset)`**: Fetches multiple rows from the database. Allows specifying conditions, ordering, and limits for the results.
+
+9. **`listpaging($table, $where, $params, $orderBy, $limit, $offset)`**: Fetches rows with pagination support. Useful for displaying data in a paginated format.
+
+10. **`add($table, $data)`**: Inserts a new row into the specified table. Calls the `insert` method of the database driver.
+
+11. **`set($table, $data, $where, $params)`**: Updates rows in the specified table based on the conditions. Calls the `update` method of the database driver.
+
+12. **`del($table, $where, $params)`**: Deletes rows from the specified table based on the conditions. Calls the `delete` method of the database driver.
+
+13. **`query($query, $params)`**: Executes a custom SQL query. Allows for complex database interactions that are not covered by the other predefined methods.
+
+14. **`lastInsertId()`**: Returns the ID of the last inserted row. Useful when inserting data and needing to reference the inserted row's ID.
+
+15. **`count($table, $where, $params)`**: Counts the number of rows in a table that match the specified conditions.
+
+### How to Extend `BaseModel`
+To create a model, extend the `BaseModel` class and define the `$table`, `$fillable`, and `$guarded` properties as needed. Override any methods as required to meet the specific needs of the model.
+
 
 ### Example of a Model
 
