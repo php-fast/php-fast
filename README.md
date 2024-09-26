@@ -518,3 +518,421 @@ $this->data('footer', $footer);
 echo $this->render('themes', 'home/home');
 ```
 
+## 8. Creating a Model
+
+Models in PHP-Fast are responsible for interacting with the database. They contain methods for querying, inserting, updating, and deleting data in the database. PHP-Fast provides a base model (`BaseModel`) that your models can extend to use common database operations easily.
+
+### Using Command to Create Models
+
+To quickly generate a new model, you can use the command-line tool:
+
+```bash
+php init models <model-name>
+
+This command will create a new model file in the application/models directory.
+```bash
+php init models users
+```
+
+### Example of a Model
+
+Below is an example of a model in PHP-Fast. This model (UsersModel) defines a table schema and includes basic CRUD (Create, Read, Update, Delete) operations.
+
+```php
+<?php
+namespace App\Models;
+use System\Core\BaseModel;
+
+class UsersModel extends BaseModel {
+
+    protected $table = 'users';
+
+    // Columns that are allowed to be added or updated
+    protected $fillable = ['name', 'email', 'password', 'age'];
+
+    // Columns that are protected and not allowed to be updated
+    protected $guarded = ['id', 'created_at'];
+
+    /**
+     * Define the table schema using the schema builder
+     * 
+     * @return array Table schema
+     */
+    public function _schema() {
+        return [
+            'id' => [
+                'type' => 'int unsigned',
+                'auto_increment' => true,
+                'key' => 'primary',
+                'null' => false
+            ],
+            'name' => [
+                'type' => 'varchar(150)',
+                'key' => 'unique',
+                'null' => false,
+                'default' => ''
+            ],
+            'email' => [
+                'type' => 'varchar(150)',
+                'key'   =>  'unique',
+                'null' => false,
+                'default' => ''
+            ],
+            'password' => [
+                'type' => 'varchar(100)',
+                'null' => true,
+                'default' => '1234567890123456789012345678932'
+            ],
+            'age' => [
+                'type' => 'int',
+                'key'   =>  'unique',
+                'unsigned' => true,
+                'null' => true,
+                'default' => '18'
+            ],
+            'created_at' => [
+                'type' => 'timestamp',
+                'null' => true,
+                'default' => '2020-01-01 01:01:01',
+                'on_update' => 'CURRENT_TIMESTAMP'
+            ],
+            'updated_at' => [
+                'type' => 'timestamp',
+                'null' => true,
+                'default' => '2020-01-01 01:01:01',
+                'on_update' => 'CURRENT_TIMESTAMP'
+            ]
+        ];
+    }
+
+    /**
+     * Get all users
+     * 
+     * @param string|null $where Optional query condition
+     * @param array $params Array of values for the condition
+     * @param string|null $orderBy Column to sort by
+     * @param int|null $limit Limit the number of results
+     * @param int|null $offset Offset for the results
+     * @return array List of users
+     */
+    public function getUsers($where = '', $params = [], $orderBy = 'id DESC', $limit = null, $offset = null) {
+        return $this->list($this->table, $where, $params, $orderBy, $limit, $offset);
+    }
+}
+```
+
+### Synchronizing Model into Database
+After creating or modifying a model's schema, you can use the following command to synchronize the model's schema with the database:
+
+```bash
+php init table <model-name>
+```
+
+This command reads the schema defined in the model's _schema() method and synchronizes it with the database. Example:
+```bash
+php init table users
+```
+
+This will use the schema defined in UsersModel to create or update the users table in the database.
+
+### Important Notes
+The fillable property defines which columns can be mass-assigned, while the guarded property lists columns that should not be modified directly.
+The _schema() method in the model defines the structure of the table and is used for database synchronization.
+Use the built-in methods in BaseModel (e.g., list, row, add, set, del) to simplify database operations in your models.
+
+## 9. Creating Middleware
+
+Middleware in PHP-Fast allows you to filter HTTP requests entering your application. This can be useful for tasks such as user authentication, input validation, and permission checks before the request reaches the controller.
+
+### Creating a Middleware
+
+To create a new middleware, follow these steps:
+
+1. Navigate to the `application/middlewares` directory.
+2. Create a new file, for example, `AuthMiddleware.php`.
+3. Define your middleware logic in the new file. Here's an example of a basic authentication middleware:
+
+```php
+<?php
+
+namespace App\Middlewares;
+
+class AuthMiddleware {
+    public function handle($request, $next) {
+        // Authentication logic
+        if (!isset($_SESSION['user'])) {
+            echo "Unauthorized access!";
+            exit;
+        }
+        return $next($request);
+    }
+}
+```
+
+## 9. Creating Middleware
+
+Middleware in PHP-Fast provides a convenient mechanism for filtering HTTP requests entering your application. You can use middleware for various tasks, such as verifying if a user is authenticated, logging requests, or managing permissions. This section will guide you through the creation and usage of middleware in PHP-Fast.
+
+### Adding Middleware
+
+All middleware classes should be placed in the `application/middlewares` directory. A middleware class contains a `handle` method, which will be executed when the middleware is applied to a route or controller.
+
+### Example: Creating an Authentication Middleware
+
+Let's create a simple `AuthMiddleware` that checks if a user is logged in before allowing access to certain routes.
+
+1. Navigate to `application/middlewares/` and create a new file named `AuthMiddleware.php`.
+
+2. Add the following code to `AuthMiddleware.php`:
+
+    ```php
+    <?php
+    namespace App\Middlewares;
+
+    class AuthMiddleware {
+        public function handle($request, $next) {
+            // Authentication logic
+            if (!isset($_SESSION['user'])) {
+                echo "Unauthorized access!";
+                exit;
+            }
+            return $next($request);
+        }
+    }
+    ```
+
+### Applying Middleware to Routes
+
+To apply middleware to a route, pass the middleware class name as an array in the route definition within `application/routes/web.php` or `application/routes/api.php`.
+
+Example: Applying `AuthMiddleware` to a route in `web.php`:
+
+    ```php
+    $routes->get('admin', 'AdminController::index', [\App\Middlewares\AuthMiddleware::class]);
+    ```
+
+In this example, when the user accesses the `admin` route, the `AuthMiddleware`'s `handle` method is executed before the `AdminController`'s `index` method.
+
+### Creating a Permission Middleware
+
+Similarly, you can create a `PermissionMiddleware` to manage access control for different parts of your application.
+
+1. Create a new file in `application/middlewares/` named `PermissionMiddleware.php`.
+
+2. Add the following code:
+
+    ```php
+    <?php
+    namespace App\Middlewares;
+
+    class PermissionMiddleware {
+        public function handle($request, $next, $permissions = []) {
+            // Check if the user has the required permissions
+            $userPermissions = $_SESSION['user_permissions'] ?? [];
+
+            foreach ($permissions as $permission) {
+                if (!in_array($permission, $userPermissions)) {
+                    echo "Access denied!";
+                    exit;
+                }
+            }
+
+            return $next($request);
+        }
+    }
+    ```
+
+3. Apply this middleware to a route and pass the necessary permissions:
+
+    ```php
+    $routes->get('admin/settings', 'AdminController::settings', [
+        [\App\Middlewares\PermissionMiddleware::class, ['manage_settings']]
+    ]);
+    ```
+
+### Using Middleware in Controllers
+
+You can also use middleware in controllers to filter access to specific methods.
+
+1. In your controller (e.g., `AdminController.php`), call the middleware within the method:
+
+    ```php
+    namespace App\Controllers;
+
+    use System\Core\BaseController;
+    use App\Middlewares\AuthMiddleware;
+
+    class AdminController extends BaseController {
+        public function index() {
+            // Call the middleware
+            (new AuthMiddleware())->handle(request(), function() {
+                // Code for the index method
+                echo "Welcome to the Admin Dashboard!";
+            });
+        }
+    }
+    ```
+
+### Conclusion
+
+Middleware provides a clean and reusable way to handle common tasks, such as authentication and permission checks, in your application. By creating and applying middleware to routes or within controllers, you can enforce consistent behavior and security across your web application.
+
+## 10. Views and Templates
+
+PHP-Fast provides a flexible view rendering system to help you create dynamic web pages. The views are stored in the `application/views/` directory and support layouts, components, and data passing.
+
+### Directory Structure
+
+By default, the views are organized as follows:
+
+```php
+application/ 
+── views/ 
+──────default/ 
+────────admin/ 
+────────component/ 
+────────────footer.php 
+────────────header.php
+────────home/ 
+────────────add_user.php 
+────────────edit_user.php 
+────────────home.php 
+────────404.php
+────────themes.php
+```
+
+
+### Creating a View
+
+1. Navigate to the `application/views/` directory.
+2. Create a new `.php` file in the desired directory (e.g., `home/home.php`).
+3. Add your HTML and PHP content to the file:
+    $$$php
+    <h1>Welcome to PHP-Fast</h1>
+    <p>This is the home page.</p>
+    $$$
+
+### Using Layouts
+
+A layout is a common template file (e.g., `header`, `footer`) used to wrap around the main content of your pages. You can store layouts in the `component/` directory. 
+
+- Example `header.php` (located at `application/views/default/component/header.php`):
+    $$$php
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>PHP-Fast - <?= $pageTitle ?? 'Home' ?></title>
+    </head>
+    <body>
+    <header>
+        <h1>Header Component</h1>
+    </header>
+    $$$
+
+- Example `footer.php` (located at `application/views/default/component/footer.php`):
+    $$$php
+    <footer>
+        <p>&copy; 2024 PHP-Fast</p>
+    </footer>
+    </body>
+    </html>
+    $$$
+
+### Passing Data to Views
+
+You can pass data from a controller to a view using the `Render` library. Use the `setData()` method to set the data and the `render()` method to render the view.
+
+- Example Controller:
+    $$$php
+    <?php
+
+    namespace App\Controllers;
+
+    use System\Core\BaseController;
+
+    class HomeController extends BaseController {
+        public function index() {
+            $data = [
+                'pageTitle' => 'Welcome to PHP-Fast',
+                'message' => 'This is the home page.'
+            ];
+            
+            // Set data and render view
+            $this->setData($data);
+            $this->render('home/home');
+        }
+    }
+    $$$
+
+- Example View (`home/home.php`):
+    $$$php
+    <h1><?= $pageTitle ?></h1>
+    <p><?= $message ?></p>
+    $$$
+
+### Rendering Components
+
+Components are reusable parts of the view, like headers, footers, and sidebars. Use the `Render` library to include components in your views.
+
+- Example (`home/home.php`):
+    $$$php
+    <?php $this->render('component/header'); ?>
+    
+    <h1><?= $pageTitle ?></h1>
+    <p><?= $message ?></p>
+    
+    <?php $this->render('component/footer'); ?>
+    $$$
+
+### Example: Full Page Rendering
+
+Here’s an example of a full page rendering using the `Render` library in a controller:
+
+- Controller (`HomeController.php`):
+    $$$php
+    <?php
+
+    namespace App\Controllers;
+
+    use System\Core\BaseController;
+
+    class HomeController extends BaseController {
+        public function index() {
+            $data = [
+                'pageTitle' => 'Welcome to PHP-Fast',
+                'message' => 'This is the home page.'
+            ];
+            
+            // Set data and render the full page with layout components
+            $this->setData($data);
+            $this->render('component/header');
+            $this->render('home/home');
+            $this->render('component/footer');
+        }
+    }
+    $$$
+
+### Error Pages
+
+Custom error pages can be created and placed in the `application/views/default/` directory. For example, a 404 error page can be defined in `404.php`.
+
+- Example `404.php`:
+    $$$php
+    <h1>404 - Page Not Found</h1>
+    <p>The page you are looking for does not exist.</p>
+    $$$
+
+You can then handle errors in your controller and render the error page when necessary:
+
+- Example:
+    $$$php
+    if (!$pageFound) {
+        $this->render('404');
+    }
+    $$$
+
+### Conclusion
+
+The view system in PHP-Fast allows you to build complex pages with ease. You can create layouts, include components, and pass data from controllers to views. This approach helps maintain a clean and modular codebase, making it easier to manage and extend your application.
+
+
