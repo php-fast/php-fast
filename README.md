@@ -21,7 +21,7 @@ This framework includes all the essential functionalities required for web appli
 4. [Configuration](#4-configuration)
     - Configuration Files
     - Environment Variables
-5. [Command-Line Interface (`php init`)](#5-command-line-interface-php-init)
+5. [Command-Line Interface (`php init`)](#5-command-line)
     - [Database Synchronization (`table`)]
     - [Create Controller (`controllers`)]
     - [Create Model (`models`)]
@@ -256,7 +256,7 @@ Here is a breakdown of the key configuration options available in `config.php`:
 ### Modifying Configuration
 To change these settings, open `application/config/config.php` and update the corresponding values based on your environment and requirements.
 
-## 5. Command-Line Interface (`php init`)
+## 5. Command-Line
 
 PHP-Fast includes a built-in command-line interface (CLI) to simplify the creation of controllers, models, and database synchronization. The CLI tool allows you to quickly scaffold various components of your application and perform essential tasks without manual coding.
 
