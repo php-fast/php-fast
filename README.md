@@ -5,11 +5,11 @@ PHP-Fast is a lightweight and efficient MVC framework designed for rapid web app
 This framework includes all the essential functionalities required for web application development while still giving users the flexibility to customize parts of their applications as needed.
 
 ## Table of Contents
-1. [Introduction](#introduction)
+1. [Introduction](#1-introduction)
     - Overview
     - Features
     - Requirements
-2. [Installation](#installation)
+2. [Installation](#2-installation)
     - Using Composer
     - Manual Installation
 3. [Directory Structure](#directory-structure)
