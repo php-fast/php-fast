@@ -30,38 +30,38 @@ This framework includes all the essential functionalities required for web appli
     - Dynamic Routing
     - Middleware in Routes
 7. [Creating a Controller](#7-creating-a-controller)
-8. [Creating a Model](#creating-a-model)
-9. [Creating Middleware](#creating-middleware)
-10. [Views and Templates](#views-and-templates)
+8. [Creating a Model](#8-creating-a-model)
+9. [Creating Middleware](#9-creating-middleware)
+10. [Views and Templates](#10-views-and-templates)
     - Layouts and Components
     - Passing Data to Views
     - Rendering Components
-11. [Database Integration](#database-integration)
+11. [Database Integration](#11-database-integration)
     - Using Models
     - Query Builder
     - Database Drivers
-12. [Caching](#caching)
+12. [Caching](#12-caching)
     - Using Cache in Controllers
     - Cache Drivers
-13. [Error Handling](#error-handling)
+13. [Error Handling](#13-error-handling)
     - Custom Error Pages
     - Exception Handling
-14. [Security](#security)
+14. [Security](#14-security)
     - Data Sanitization
     - CSRF Protection
-15. [Logging and Monitoring](#logging-and-monitoring)
+15. [Logging and Monitoring](#15-logging-and-monitoring)
     - Logger Usage
     - Performance Monitoring
-16. [Testing](#testing)
+16. [Testing](#16-testing)
     - Unit Testing
     - Integration Testing
-17. [Deployment](#deployment)
+17. [Deployment](#17-deployment)
     - Best Practices
     - Production Configuration
-18. [Contributing](#contributing)
+18. [Contributing](#18-contributing)
     - How to Contribute
     - Code of Conduct
-19. [License](#license)
+19. [License](#19-license)
 
 ## 1. Introduction
 
@@ -1077,3 +1077,146 @@ This command will use the `_schema` method in `UsersModel` to create or update t
 With these tools and methods, you can efficiently integrate your PHP-Fast application with various databases and perform robust data operations.
 
 
+## 12. Caching
+
+PHP-Fast provides a flexible caching system to help you optimize the performance of your application. The framework supports different caching drivers, allowing you to store cache data in various storage mechanisms like Redis, files, or others based on your requirements.
+
+### Basic Usage
+
+Caching can be utilized within controllers, models, or anywhere else in your application. The cache configuration is defined in `application/config/config.php` under the `'cache'` key.
+
+#### Cache Configuration
+
+In `application/config/config.php`, you can specify the cache driver and its associated settings:
+
+```php
+'cache' => [
+    'cache_driver' => 'redis', // Choose between 'redis', 'file', etc.
+    'cache_host' => '127.0.0.1',
+    'cache_port' => 6379,
+    'cache_username' => '',
+    'cache_password' => '',
+    'cache_database' => 0,
+],
+```
+
+### Using Cache in Controllers
+
+To use caching in your controllers, you can utilize the `Cache` class provided by the framework. The `Cache` class offers methods like `set()`, `get()`, and `delete()` to manage cache data.
+
+#### Example: Setting Cache Data
+
+```php
+use System\Drivers\Cache\Cache;
+
+class HomeController extends BaseController {
+    public function index() {
+        // Set cache data with a key and expiration time (in seconds)
+        Cache::set('homepage_data', $data, 3600); // Caches $data for 1 hour
+    }
+}
+```
+
+#### Example: Retrieving Cache Data
+
+```php
+use System\Drivers\Cache\Cache;
+
+class HomeController extends BaseController {
+    public function index() {
+        // Retrieve cache data using the key
+        $data = Cache::get('homepage_data');
+
+        if (!$data) {
+            // If cache data doesn't exist, perform your logic and set it
+            $data = $this->getFreshData();
+            Cache::set('homepage_data', $data, 3600);
+        }
+
+        return $data;
+    }
+}
+```
+
+#### Example: Deleting Cache Data
+
+```php
+use System\Drivers\Cache\Cache;
+
+class UserController extends BaseController {
+    public function updateUser($id) {
+        // Update user logic
+        // ...
+
+        // Clear cache for specific data
+        Cache::delete('user_' . $id);
+    }
+}
+```
+
+### Cache Drivers
+
+PHP-Fast's caching system supports multiple drivers. By default, the framework provides two drivers: `FilesCache` and `RedisCache`. You can implement additional drivers if needed by extending the `Cache` class.
+
+#### File Cache
+
+The `FilesCache` driver stores cache data as files on the server. This is a simple caching method that doesn't require any external services but may be slower for large-scale applications.
+
+- To use the file cache, set the driver in `config.php`:
+
+```php
+'cache_driver' => 'file',
+```
+
+#### Redis Cache
+
+The `RedisCache` driver uses a Redis server to store cache data, which provides fast, efficient, and persistent caching. It is suitable for larger applications and supports advanced cache operations.
+
+- To use the Redis cache, set the driver in `config.php`:
+
+```php
+'cache_driver' => 'redis',
+'cache_host' => '127.0.0.1',
+'cache_port' => 6379,
+'cache_database' => 0,
+```
+
+### Creating a Custom Cache Driver
+
+If you want to implement a custom cache driver, you can create a new class in the `system/drivers/cache/` directory that extends the `Cache` class.
+
+#### Example: Creating a Custom Cache Driver
+
+1. Create a new file in the `system/drivers/cache/` directory, e.g., `CustomCache.php`.
+2. Extend the `Cache` class and implement the required methods.
+
+```php
+namespace System\Drivers\Cache;
+
+class CustomCache extends Cache {
+    public function set($key, $value, $expiration = 0) {
+        // Implement custom set logic
+    }
+
+    public function get($key) {
+        // Implement custom get logic
+    }
+
+    public function delete($key) {
+        // Implement custom delete logic
+    }
+}
+```
+
+3. Update the cache configuration in `config.php` to use your custom driver:
+
+```php
+'cache_driver' => 'custom',
+```
+
+### Notes
+- Always choose a caching driver that best suits the scale and requirements of your application.
+- Set appropriate expiration times for cached data to ensure data freshness and avoid stale cache issues.
+- Use cache sparingly for data that is frequently accessed but does not change often.
+
+By effectively using the caching system in PHP-Fast, you can significantly improve your application's performance and user experience.
