@@ -10,7 +10,7 @@ This framework includes all the essential functionalities required for web appli
     - Features
     - Requirements
 2. [Installation](#2-installation)
-    - Using Composer
+    - Using Github
     - Manual Installation
 3. [Directory Structure](#directory-structure)
     - application/
@@ -82,7 +82,48 @@ PHP-Fast is built to streamline the development process, providing an intuitive 
 - A web server (Apache, Nginx, etc.) with support for PHP.
 
 ## 2. Installation
-### Using Composer
-To install PHP-Fast using Composer, run the following command:
-```bash
-composer create-project php-fast/php-fast
+
+You can install PHP-Fast in two ways: using Git to clone the repository or by manually downloading the source files.
+
+### Using Git Clone
+
+To install PHP-Fast using Git, follow these steps:
+
+1. Open your terminal.
+2. Run the following command to clone the repository:
+    ```bash
+    git clone https://github.com/php-fast/php-fast.git
+    ```
+3. Navigate to the directory of the cloned repository:
+    ```bash
+    cd php-fast
+    ```
+4. Install the necessary dependencies using Composer:
+    ```bash
+    composer install
+    ```
+5. Set the correct permissions for the `writeable/` directory:
+    ```bash
+    chmod -R 777 writeable/
+    ```
+6. Configure your web server to point to the `public/` directory as the root directory of your application.
+
+### Manual Installation
+
+1. Download the latest release from the [PHP-Fast GitHub repository](https://github.com/php-fast/php-fast).
+2. Extract the downloaded files into your desired directory.
+3. Open a terminal and navigate to the extracted directory:
+    ```bash
+    cd path/to/php-fast
+    ```
+4. Install the required dependencies using Composer:
+    ```bash
+    composer install
+    ```
+5. Set the correct permissions for the `writeable/` directory:
+    ```bash
+    chmod -R 777 writeable/
+    ```
+6. Set up your web server to use the `public/` directory as the document root.
+
+After completing these steps, PHP-Fast is ready for development. You can now configure your application and start building your web project.
