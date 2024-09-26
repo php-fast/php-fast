@@ -132,7 +132,7 @@ After completing these steps, PHP-Fast is ready for development. You can now con
 ## 3. Directory Structure
 
 PHP-Fast follows a well-organized directory structure to keep the application clean and modular. Here's a detailed breakdown of each directory and its purpose:
-
+```php
 ROOT
 ├── application/                  # Application-specific files
 │   ├── config/                   # Configuration files
