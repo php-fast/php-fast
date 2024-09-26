@@ -367,3 +367,154 @@ $routes->group('admin', function($routes) {
 
 ```
 
+## 7. Creating a Controller
+
+Controllers in PHP-Fast are responsible for handling HTTP requests and returning responses. They act as a bridge between models, views, and other application components. All controllers are stored in the `application/controllers` directory.
+
+### Creating a New Controller
+
+To create a new controller manually, follow these steps:
+
+1. Navigate to the `application/controllers` directory.
+2. Create a new file with the name of your controller, e.g., `ProductsController.php`.
+3. Define the controller class by extending `System\Core\BaseController`.
+
+Here is a basic example:
+
+```php
+<?php
+
+namespace App\Controllers;
+
+use System\Core\BaseController;
+
+class ProductsController extends BaseController
+{
+    public function index()
+    {
+        // Code to fetch and display a list of products
+        echo "Welcome to the Products Page!";
+    }
+
+    public function show($id)
+    {
+        // Code to fetch and display a single product by ID
+        echo "Product ID: " . $id;
+    }
+}
+```
+
+### Using the Command-Line Interface
+You can also use the built-in command-line tool to create a new controller:
+```bash
+php init controllers <controller-name>
+```
+Example:
+php init controllers Welcome
+
+This will create a `ProductsController.php` file in the `application/controllers` directory with a basic structure.
+
+#### Basic Structure of a Controller
+A controller in PHP-Fast typically consists of several methods, each corresponding to a specific action or HTTP request (e.g., viewing a list, creating a new item, updating, or deleting). Here's an example structure:
+
+```php
+<?php
+
+namespace App\Controllers;
+
+use System\Core\BaseController;
+
+class UsersController extends BaseController
+{
+    public function index()
+    {
+        // This method handles displaying the list of users
+    }
+
+    public function create()
+    {
+        // This method handles displaying a form for creating a new user
+    }
+
+    public function store()
+    {
+        // This method handles storing the new user data
+    }
+
+    public function edit($id)
+    {
+        // This method handles displaying a form for editing an existing user
+    }
+
+    public function update($id)
+    {
+        // This method handles updating an existing user
+    }
+
+    public function delete($id)
+    {
+        // This method handles deleting a user
+    }
+}
+```
+
+#### Routing to a Controller
+To route HTTP requests to a controller, define your routes in application/routes/web.php or application/routes/api.php. Here is an example:
+
+```php
+$routes->get('products', 'ProductsController::index');
+$routes->get('products/(:num)', 'ProductsController::show:$1');
+```
+
+In the above example:
+```php
+ProductsController::index is called when the /products URL is accessed.
+ProductsController::show:$1 is called when /products/{id} is accessed, where {id} is a dynamic parameter.
+```
+
+### Using Middleware in a Controller
+Controllers can also use middleware to handle tasks like authentication and permission checks. Here's how to apply middleware in a controller:
+```php
+$routes->get('admin/products', 'ProductsController::index', [\App\Middlewares\AuthMiddleware::class]);
+```
+
+### Accessing Models in a Controller
+Controllers can access models to interact with the database. Here's an example of loading a model and using it in a controller:
+
+```php
+<?php
+
+namespace App\Controllers;
+
+use System\Core\BaseController;
+use App\Models\ProductsModel;
+
+class ProductsController extends BaseController
+{
+    protected $productsModel;
+
+    public function __construct()
+    {
+        $this->productsModel = new ProductsModel();
+    }
+
+    public function index()
+    {
+        $products = $this->productsModel->getAllProducts();
+        // Pass the products to a view
+        $this->render('products/index', ['products' => $products]);
+    }
+}
+```
+
+### Render Views & Assest Data to Views
+```php
+$this->data('title', 'Đây Là Trang Chủ');
+$this->data('users', $users['data']);
+$header = Render::component('component/header', ['title' => $this->data('title')]);
+$footer = Render::component('component/footer');
+$this->data('header', $header);
+$this->data('footer', $footer);
+echo $this->render('themes', 'home/home');
+```
+
