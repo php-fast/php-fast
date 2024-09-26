@@ -208,3 +208,159 @@ ROOT
 
 This directory structure provides a clear overview of where different types of files and functionalities are located in the PHP-Fast framework.
 
+## 4. Configuration
+
+PHP-Fast uses a simple and flexible configuration system. The main configuration file is located in the `application/config/config.php`. This file contains various settings for your application, including app settings, database, email, caching, and themes.
+
+### Basic Configuration
+
+Here is a breakdown of the key configuration options available in `config.php`:
+
+#### Application Settings
+- `debug`: Set to `true` for development, `false` for production.
+- `environment`: Specify the application environment (`development`, `production`, etc.).
+- `app_url`: The base URL of your application.
+- `app_name`: The name of your application.
+- `app_timezone`: Set the timezone for your application.
+
+```php
+'app' => [
+    'debug' => true,
+    'environment' => 'development',
+    'app_url' => 'https://phpfast.net/code/',
+    'app_name' => 'phpfast',
+    'app_timezone' => 'UTC'
+],
+
+#### Security Settings
+- `app_id`: A unique identifier for your application.
+- `app_secret`: A secret key for securing your application.
+
+#### Database Configuration
+- `db_driver`: Database driver to use (mysql, pgsql, etc.).
+- `db_host`, `db_port`: Hostname and port for the database server.
+- `db_username`, `db_password`: Credentials for connecting to the database.
+- `db_database`: The name of the database.
+- `db_charset`: Character set for database communication.
+
+#### Cache Settings
+- `cache_driver`: Cache driver to use (redis, file, etc.).
+- `cache_host`, `cache_port`: Host and port for the cache server.
+- `cache_username`, `cache_password`: Credentials for the cache server (if required).
+- `cache_database`: Cache database index (used in Redis).
+
+#### Theme Settings
+- `theme_path`: Path to the theme directory.
+- `theme_name`: Name of the active theme.
+
+### Modifying Configuration
+To change these settings, open `application/config/config.php` and update the corresponding values based on your environment and requirements.
+
+## 5. Command-Line Interface (`php init`)
+
+PHP-Fast includes a built-in command-line interface (CLI) to simplify the creation of controllers, models, and database synchronization. The CLI tool allows you to quickly scaffold various components of your application and perform essential tasks without manual coding.
+
+### Usage
+
+To use the command-line interface, open your terminal, navigate to the root directory of your project, and run:
+
+```bash
+php init <command> <name>
+
+### 1. Database Synchronization (table)
+Synchronizes the database table based on the model's schema. This command reads the schema defined in the model's _schema() method and applies the changes to the database.
+Command: `php init table <name>`
+
+### 2. Create Controller (controllers)
+Generates a new controller file in the application/controllers directory. The command creates a basic controller template, helping you quickly set up new features for your application.
+Command: `php init controllers <name>`
+
+### 3. Create Model (models)
+Creates a new model file in the application/models directory. The command provides a default model template, including the _schema() method for defining the database table's structure and CRUD functions.
+Command: `php init models <name>`
+
+## 6. Routing
+
+PHP-Fast provides a flexible routing system that maps HTTP requests to specific controllers and methods within your application. Routing definitions are located in the `application/routes` directory and are typically separated into files such as `web.php` for web routes and `api.php` for API routes.
+
+### Defining Routes
+
+Routes in PHP-Fast are defined using the `$routes` object in the respective route files. The syntax for defining routes is simple and allows for various HTTP methods such as `GET`, `POST`, `PUT`, `DELETE`, etc.
+
+### Basic Routing in `web.php`
+
+### Supported Parameter Types and Regular Expression Conversion
+
+The `convertToRegex` function in PHP-Fast supports various parameter types in routes, similar to CodeIgniter. These parameters are converted into regular expressions to match segments in the URL. Below are the supported parameter types and their corresponding regex patterns:
+
+- `(:any)`: Matches any characters except for a forward slash (`/`). Converts to `(.+)`.
+- `(:segment)`: Matches any segment of the URL, excluding slashes. Converts to `([^/]+)`.
+- `(:num)`: Matches only numeric values. Converts to `(\d+)`.
+- `(:alpha)`: Matches alphabetic characters (both uppercase and lowercase). Converts to `([a-zA-Z]+)`.
+- `(:alphadash)`: Matches alphabetic characters and dashes (`-`). Converts to `([a-zA-Z\-]+)`.
+- `(:alphanum)`: Matches alphanumeric characters. Converts to `([a-zA-Z0-9]+)`.
+- `(:alphanumdash)`: Matches alphanumeric characters and dashes (`-`). Converts to `([a-zA-Z0-9\-]+)`.
+
+Here is how these parameters can be used in route definitions and how they are processed by the `convertToRegex` function:
+
+### Examples
+
+```php
+
+// Routes with Method: GET/POST/PUT/DELETE
+$routes->get('user/(:num)', 'UsersController::view/$1');
+$routes->post('user/create', 'UsersController::create');
+$routes->put('user/edit/(:num)', 'UsersController::edit/$1');
+$routes->delete('user/delete/(:num)', 'UsersController::delete/$1');
+
+// Matches any URL with a single segment (any characters)
+$routes->get('blog/(:any)', 'BlogController::show:$1');
+// Example URL: blog/my-awesome-post
+// Converted to regex: #^blog/(.+)$#
+
+// Matches a URL segment with any characters except slashes
+$routes->get('category/(:segment)', 'CategoryController::list:$1');
+// Example URL: category/electronics
+// Converted to regex: #^category/([^/]+)$#
+
+// Matches a URL segment with Action Function Rounter
+$routes->get('news/(:any)', 'CategoryController::$1');
+// Example URL: news/index => call to NewsController()->index(); news/home => call to NewsController()->home()
+
+// Matches a numeric segment
+$routes->get('product/(:num)', 'ProductController::details:$1');
+// Example URL: product/123
+// Converted to regex: #^product/(\d+)$#
+
+// Matches a URL segment containing only alphabetic characters
+$routes->get('user/(:alpha)', 'UserController::profile:$1');
+// Example URL: user/johndoe
+// Converted to regex: #^user/([a-zA-Z]+)$#
+
+// Matches a URL segment containing alphabetic characters and dashes
+$routes->get('slug/(:alphadash)', 'PageController::show:$1');
+// Example URL: slug/welcome-to-phpfast
+// Converted to regex: #^slug/([a-zA-Z\-]+)$#
+
+// Matches a URL segment containing alphanumeric characters
+$routes->get('code/(:alphanum)', 'CodeController::execute:$1');
+// Example URL: code/abc123
+// Converted to regex: #^code/([a-zA-Z0-9]+)$#
+
+// Matches a URL segment containing alphanumeric characters and dashes
+$routes->get('article/(:alphanumdash)', 'ArticleController::read:$1');
+// Example URL: article/phpfast-101
+// Converted to regex: #^article/([a-zA-Z0-9\-]+)$#
+
+//Middleware in Routes
+You can apply middleware to routes to handle specific logic before a request reaches the controller. Here's an example of applying middleware:
+
+// Applying middleware to a single route
+$routes->get('admin', 'AdminController::index', [\App\Middlewares\AuthMiddleware::class]);
+
+// Applying middleware to multiple routes
+$routes->group('admin', function($routes) {
+    $routes->get('dashboard', 'AdminController::dashboard');
+    $routes->post('settings', 'AdminController::saveSettings');
+}, [\App\Middlewares\AuthMiddleware::class]);
+
