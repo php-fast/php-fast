@@ -807,17 +807,17 @@ application/
 1. Navigate to the `application/views/` directory.
 2. Create a new `.php` file in the desired directory (e.g., `home/home.php`).
 3. Add your HTML and PHP content to the file:
-    $$$php
+    ```php
     <h1>Welcome to PHP-Fast</h1>
     <p>This is the home page.</p>
-    $$$
+    ```
 
 ### Using Layouts
 
 A layout is a common template file (e.g., `header`, `footer`) used to wrap around the main content of your pages. You can store layouts in the `component/` directory. 
 
 - Example `header.php` (located at `application/views/default/component/header.php`):
-    $$$php
+    ```php
     <!DOCTYPE html>
     <html>
     <head>
@@ -827,23 +827,23 @@ A layout is a common template file (e.g., `header`, `footer`) used to wrap aroun
     <header>
         <h1>Header Component</h1>
     </header>
-    $$$
+    ```
 
 - Example `footer.php` (located at `application/views/default/component/footer.php`):
-    $$$php
+    ```php
     <footer>
         <p>&copy; 2024 PHP-Fast</p>
     </footer>
     </body>
     </html>
-    $$$
+    ```
 
 ### Passing Data to Views
 
 You can pass data from a controller to a view using the `Render` library. Use the `setData()` method to set the data and the `render()` method to render the view.
 
 - Example Controller:
-    $$$php
+    ```php
     <?php
 
     namespace App\Controllers;
@@ -862,34 +862,34 @@ You can pass data from a controller to a view using the `Render` library. Use th
             $this->render('home/home');
         }
     }
-    $$$
+    ```
 
 - Example View (`home/home.php`):
-    $$$php
+    ```php
     <h1><?= $pageTitle ?></h1>
     <p><?= $message ?></p>
-    $$$
+    ```
 
 ### Rendering Components
 
 Components are reusable parts of the view, like headers, footers, and sidebars. Use the `Render` library to include components in your views.
 
 - Example (`home/home.php`):
-    $$$php
+    ```php
     <?php $this->render('component/header'); ?>
     
     <h1><?= $pageTitle ?></h1>
     <p><?= $message ?></p>
     
     <?php $this->render('component/footer'); ?>
-    $$$
+    ```
 
 ### Example: Full Page Rendering
 
 Here’s an example of a full page rendering using the `Render` library in a controller:
 
 - Controller (`HomeController.php`):
-    $$$php
+    ```php
     <?php
 
     namespace App\Controllers;
@@ -910,26 +910,26 @@ Here’s an example of a full page rendering using the `Render` library in a con
             $this->render('component/footer');
         }
     }
-    $$$
+    ```
 
 ### Error Pages
 
 Custom error pages can be created and placed in the `application/views/default/` directory. For example, a 404 error page can be defined in `404.php`.
 
 - Example `404.php`:
-    $$$php
+    ```php
     <h1>404 - Page Not Found</h1>
     <p>The page you are looking for does not exist.</p>
-    $$$
+    ```
 
 You can then handle errors in your controller and render the error page when necessary:
 
 - Example:
-    $$$php
+    ```php
     if (!$pageFound) {
         $this->render('404');
     }
-    $$$
+    ```
 
 ### Conclusion
 
