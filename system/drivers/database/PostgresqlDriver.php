@@ -2,6 +2,8 @@
 namespace System\Drivers\Database;
 use PDO;
 use PDOException;
+use System\Core\AppException;
+use System\Libraries\Logger;
 
 class PostgresqlDriver extends Database {
 
@@ -17,9 +19,47 @@ class PostgresqlDriver extends Database {
             $dsn = 'pgsql:host=' . $config['db_host'] . ';port=' . $config['db_port'] . ';dbname=' . $config['db_database'];
             $this->pdo = new PDO($dsn, $config['db_username'], $config['db_password']);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        }catch (AppException $e) {
+            $e->handle();
         } catch (PDOException $e) {
-            throw new \Exception('Kết nối PostgreSQL thất bại: ' . $e->getMessage());
+            Logger::error('Connect MysqlDriver failed: ' . $e->getMessage(), $e->getFile(), $e->getLine());
+            http_response_code(500);
+            echo "An unknown error has occurred. Lets check file logger.log";
         }
+        //  catch (PDOException $e) {
+        //     throw new \Exception('Kết nối PostgreSQL thất bại: ' . $e->getMessage());
+        // }
+    }
+
+    // Thực thi truy vấn SQL tùy ý
+    public function query($query, $params = []) {
+        try {
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($params);
+            return $stmt;
+        }catch (AppException $e) {
+            $e->handle();
+        } catch (PDOException $e) {
+            Logger::error('Connect MysqlDriver failed: ' . $e->getMessage(), $e->getFile(), $e->getLine());
+            http_response_code(500);
+            echo "An unknown error has occurred. Lets check file logger.log";
+        }
+    }
+
+    // Lấy ID của bản ghi vừa chèn
+    public function lastInsertId() {
+        return $this->pdo->lastInsertId();
+    }
+
+    // Đếm số bản ghi trong bảng
+    public function count($table, $where = '', $params = []) {
+        $query = "SELECT COUNT(*) as count FROM {$table}";
+        if ($where) {
+            $query .= " WHERE {$where}";
+        }
+        $stmt = $this->query($query, $params);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['count'] ?? 0;
     }
     
     /**

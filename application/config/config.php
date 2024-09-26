@@ -5,9 +5,9 @@ return [
     'app' => [
         'debug' => true,
         'environment' => 'development',
-        'app_url' => 'https://phpfast.net/',
+        'app_url' => 'https://phpfast.com/',
         'app_name' => 'phpfast',
-        'app_timezone' => 'UTC'
+        'app_timezone' => 'Asia/Ho_Chi_Minh'
     ],
     'security' => [
         'app_id' => '123456',

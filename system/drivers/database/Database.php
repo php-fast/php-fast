@@ -15,6 +15,32 @@ abstract class Database {
     abstract public function __construct($config);
 
     /**
+     * Thực thi truy vấn SQL tùy ý
+     * 
+     * @param string $query Câu lệnh SQL cần thực thi
+     * @param array $params Mảng giá trị tương ứng với các tham số trong câu lệnh SQL
+     * @return mixed Kết quả của truy vấn (sử dụng cho SELECT, INSERT, UPDATE, DELETE)
+     */
+    abstract public function query($query, $params = []);
+
+    /**
+     * Lấy ID của bản ghi vừa chèn
+     * 
+     * @return string ID của bản ghi vừa chèn
+     */
+    abstract public function lastInsertId();
+
+    /**
+     * Đếm số bản ghi trong bảng
+     * 
+     * @param string $table Tên bảng cần đếm số bản ghi
+     * @param string $where Điều kiện WHERE để đếm số bản ghi (tùy chọn)
+     * @param array $params Mảng giá trị tương ứng với các tham số trong chuỗi WHERE (tùy chọn)
+     * @return int Số bản ghi trong bảng
+     */
+    abstract public function count($table, $where = '', $params = []);
+
+    /**
      * Thực thi truy vấn SELECT lấy nhiều dòng
      * 
      * @param string $table Tên bảng cần truy vấn

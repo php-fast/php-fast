@@ -135,4 +135,25 @@ abstract class BaseModel {
     public function del($table, $where = '', $params = []) {
         return $this->db->delete($table, $where, $params);
     }
+
+    /**
+     * Thực hiện câu truy vấn SQL tự do
+     */
+    public function query($query, $params = []) {
+        return $this->db->query($query, $params);
+    }
+
+    /**
+     * Lấy ID của bản ghi vừa chèn
+     */
+    public function lastInsertId() {
+        return $this->db->lastInsertId();
+    }
+
+    /**
+     * Đếm số lượng bản ghi
+     */
+    public function count($table, $where = '', $params = []) {
+        return $this->db->count($table, $where, $params);
+    }
 }

@@ -16,6 +16,10 @@ class Bootstrap {
 
     public function __construct() {
         load_helpers(['uri', 'security']); // Load các helper như uri_helper, security_helper
+        $appConfig = config('app');
+        if (!empty($appConfig['app_timezone'])) {
+            date_default_timezone_set($appConfig['app_timezone']);
+        }
         $this->routes = new Router(); // Tạo instance cho Router
         $this->loadRoutes();          // Load các route
     }

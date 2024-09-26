@@ -28,6 +28,38 @@ class MysqlDriver extends Database {
         }
     }
 
+    // Thực thi truy vấn SQL tùy ý
+    public function query($query, $params = []) {
+        try {
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($params);
+            return $stmt;
+        } catch (AppException $e) {
+            $e->handle();
+        } catch (PDOException $e) {
+            Logger::error('Connect MysqlDriver failed: ' . $e->getMessage(), $e->getFile(), $e->getLine());
+            http_response_code(500);
+            echo "An unknown error has occurred. Lets check file logger.log";
+        }
+    }
+
+    // Lấy ID của bản ghi vừa chèn
+    public function lastInsertId() {
+        return $this->pdo->lastInsertId();
+    }
+
+    // Đếm số bản ghi trong bảng
+    public function count($table, $where = '', $params = []) {
+        $query = "SELECT COUNT(*) as count FROM {$table}";
+        if ($where) {
+            $query .= " WHERE {$where}";
+        }
+        $stmt = $this->query($query, $params);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['count'] ?? 0;
+    }
+
+
     /**
      * Chuẩn bị một câu truy vấn SQL (PDO::prepare)
      * 
