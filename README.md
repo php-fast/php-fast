@@ -205,6 +205,7 @@ ROOT
 │
 ├── composer.json                 # Composer file for managing dependencies
 └── init                          # Command-line interface script
+```
 
 This directory structure provides a clear overview of where different types of files and functionalities are located in the PHP-Fast framework.
 
@@ -230,7 +231,8 @@ Here is a breakdown of the key configuration options available in `config.php`:
     'app_url' => 'https://phpfast.net/code/',
     'app_name' => 'phpfast',
     'app_timezone' => 'UTC'
-],
+]
+```
 
 #### Security Settings
 - `app_id`: A unique identifier for your application.
@@ -264,7 +266,6 @@ PHP-Fast includes a built-in command-line interface (CLI) to simplify the creati
 
 To use the command-line interface, open your terminal, navigate to the root directory of your project, and run:
 
-```bash
 php init <command> <name>
 
 ### 1. Database Synchronization (table)
@@ -308,10 +309,10 @@ Here is how these parameters can be used in route definitions and how they are p
 ```php
 
 // Routes with Method: GET/POST/PUT/DELETE
-$routes->get('user/(:num)', 'UsersController::view/$1');
+$routes->get('user/(:num)', 'UsersController::view:$1');
 $routes->post('user/create', 'UsersController::create');
-$routes->put('user/edit/(:num)', 'UsersController::edit/$1');
-$routes->delete('user/delete/(:num)', 'UsersController::delete/$1');
+$routes->put('user/edit/(:num)', 'UsersController::edit:$1');
+$routes->delete('user/delete/(:num)', 'UsersController::delete:$1');
 
 // Matches any URL with a single segment (any characters)
 $routes->get('blog/(:any)', 'BlogController::show:$1');
@@ -363,4 +364,6 @@ $routes->group('admin', function($routes) {
     $routes->get('dashboard', 'AdminController::dashboard');
     $routes->post('settings', 'AdminController::saveSettings');
 }, [\App\Middlewares\AuthMiddleware::class]);
+
+```
 
