@@ -936,3 +936,144 @@ You can then handle errors in your controller and render the error page when nec
 The view system in PHP-Fast allows you to build complex pages with ease. You can create layouts, include components, and pass data from controllers to views. This approach helps maintain a clean and modular codebase, making it easier to manage and extend your application.
 
 
+## 11. Database Integration
+
+PHP-Fast provides built-in support for integrating with databases. It includes a Database class and drivers to help you interact with your database using models and a query builder. The default configuration for the database is set in the `application/config/config.php` file, allowing you to easily manage different database connections.
+
+### Using Models
+
+Models are classes that allow you to interact with your database. Each model represents a table in your database and contains methods to query and manipulate data. By default, models are located in the `application/models` directory.
+
+#### Creating a Model
+
+You can create a new model manually or use the command-line tool to generate it:
+
+**Manually:**
+1. Navigate to `application/models`.
+2. Create a new file, e.g., `UsersModel.php`.
+3. Define the model class:
+
+```php
+<?php
+namespace App\Models;
+
+use System\Core\BaseModel;
+
+class UsersModel extends BaseModel {
+    protected $table = 'users';
+    protected $fillable = ['username', 'email'];
+    protected $guarded = ['id', 'created_at'];
+
+    public function _schema() {
+        return [
+            'id' => ['type' => 'int unsigned', 'auto_increment' => true, 'key' => 'primary', 'null' => false],
+            'username' => ['type' => 'varchar(100)', 'null' => false],
+            'email' => ['type' => 'varchar(150)', 'null' => false]
+        ];
+    }
+
+    // Additional methods for custom queries
+}
+```
+
+#### Interacting with the Database
+
+After creating your model, you can use it in your controllers to interact with the database.
+
+**Example: Fetching all users:**
+
+```php
+<?php
+use App\Models\UsersModel;
+
+class UsersController extends BaseController {
+    public function index() {
+        $usersModel = new UsersModel();
+        $users = $usersModel->getAll(); // Fetch all users
+        $this->render('users/index', ['users' => $users]);
+    }
+}
+```
+
+### Query Builder
+
+PHP-Fast includes a basic query builder to construct SQL queries programmatically. The query builder provides a fluent interface to perform database operations.
+
+**Example: Basic Select Query:**
+
+```php
+$usersModel = new UsersModel();
+$users = $usersModel->select('id, username')
+                    ->where('status', 'active')
+                    ->orderBy('created_at', 'DESC')
+                    ->get();
+```
+
+**Example: Inserting Data:**
+
+```php
+$usersModel = new UsersModel();
+$data = [
+    'username' => 'john_doe',
+    'email' => 'john@example.com'
+];
+$usersModel->insert($data);
+```
+
+### Database Drivers
+
+PHP-Fast supports multiple database drivers. The available drivers are set up in the `system/drivers/database` directory. By default, the framework supports `MysqlDriver` and `PostgresqlDriver`.
+
+#### Switching Database Drivers
+
+To change the database driver, update the `db_driver` setting in `application/config/config.php`:
+
+```php
+'db' => [
+    'db_driver' => 'postgresql', // Change to 'mysql' or 'postgresql'
+    'db_host' => '127.0.0.1',
+    'db_port' => 5432,
+    'db_username' => 'postgres',
+    'db_password' => '',
+    'db_database' => 'phpfast',
+    'db_charset'  => 'utf8'
+],
+```
+
+The framework will automatically use the appropriate driver based on the configuration.
+
+### Custom Queries
+
+While the query builder is flexible for common use cases, you may need to run custom SQL queries in some scenarios. The model provides a method to execute raw queries:
+
+**Example: Running a Raw Query:**
+
+```php
+$usersModel = new UsersModel();
+$query = "SELECT * FROM users WHERE status = :status";
+$params = ['status' => 'active'];
+$activeUsers = $usersModel->query($query, $params);
+```
+
+### Schema Management
+
+The `_schema` method in your model defines the structure of the table associated with the model. You can use the command-line interface (`php init table <name>`) to synchronize your database tables with the defined schema.
+
+**Example: Synchronizing a Table:**
+
+Run the following command in your terminal to synchronize the table schema for the `UsersModel`:
+
+```bash
+php init table users
+```
+
+This command will use the `_schema` method in `UsersModel` to create or update the `users` table in your database.
+
+### Notes
+- Always define the `$table` property in your model to specify which table the model interacts with.
+- Use `$fillable` to list the columns that can be mass-assigned during insert or update operations.
+- Use `$guarded` to list the columns that should not be mass-assigned.
+
+With these tools and methods, you can efficiently integrate your PHP-Fast application with various databases and perform robust data operations.
+
+
