@@ -6,9 +6,9 @@ define('ROOT_PATH', realpath(__DIR__));
 require_once __DIR__ . '/system/helpers/core_helper.php';
 
 // Load Command Classes
-use System\Framework\ControllersCommand;
-use System\Framework\ModelsCommand;
-use System\Framework\TableCommand;
+use System\Commands\ControllersCommand;
+use System\Commands\ModelsCommand;
+use System\Commands\TableCommand;
 
 // Get CLI arguments
 $command = $argv[1] ?? null;
@@ -16,18 +16,18 @@ $subCommand = $argv[2] ?? null;
 
 // Ensure a command is provided
 if (!$command || !$subCommand) {
-    echo "Usage: php framework <command> <name>\n";
+    echo "Usage: php init <command> <name>\n";
     exit(1);
 }
 
 // Handle command input
 switch ($command) {
-    case 'controller':
+    case 'controllers':
         $controllerCommand = new ControllersCommand();
         $controllerCommand->create($subCommand);
         break;
 
-    case 'model':
+    case 'models':
         $modelCommand = new ModelsCommand();
         $modelCommand->create($subCommand);
         break;
@@ -43,7 +43,7 @@ switch ($command) {
         break;
 
     default:
-        echo "Invalid command. Available commands: controller, model, table.\n";
+        echo "Invalid command. Available commands: controllers, models, table.\n";
         break;
 }
 

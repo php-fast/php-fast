@@ -1,5 +1,5 @@
 <?php
-namespace System\Framework;
+namespace System\Commands;
 
 class ControllersCommand {
 
