@@ -1079,144 +1079,587 @@ With these tools and methods, you can efficiently integrate your PHP-Fast applic
 
 ## 12. Caching
 
-PHP-Fast provides a flexible caching system to help you optimize the performance of your application. The framework supports different caching drivers, allowing you to store cache data in various storage mechanisms like Redis, files, or others based on your requirements.
+PHP-Fast offers a flexible caching mechanism that allows you to store and retrieve data efficiently. The framework includes a `RedisCache` class for caching, which provides methods like `set()`, `get()`, and `delete()` to interact with the Redis server. Caching can help improve performance, especially when dealing with data that doesn't change frequently.
 
 ### Basic Usage
 
-Caching can be utilized within controllers, models, or anywhere else in your application. The cache configuration is defined in `application/config/config.php` under the `'cache'` key.
+To utilize caching in your controllers, use the `RedisCache` class provided by the framework. The cache configuration is defined in `application/config/config.php`.
 
-#### Cache Configuration
+#### Example: Using Caching in `HomeController`
 
-In `application/config/config.php`, you can specify the cache driver and its associated settings:
-
-```php
-'cache' => [
-    'cache_driver' => 'redis', // Choose between 'redis', 'file', etc.
-    'cache_host' => '127.0.0.1',
-    'cache_port' => 6379,
-    'cache_username' => '',
-    'cache_password' => '',
-    'cache_database' => 0,
-],
-```
-
-### Using Cache in Controllers
-
-To use caching in your controllers, you can utilize the `Cache` class provided by the framework. The `Cache` class offers methods like `set()`, `get()`, and `delete()` to manage cache data.
-
-#### Example: Setting Cache Data
+Here’s how you can use caching in the `HomeController`. Uncomment the caching-related lines to enable caching functionality:
 
 ```php
-use System\Drivers\Cache\Cache;
+<?php
+namespace App\Controllers;
+
+use System\Core\BaseController;
+use System\Libraries\Render;
+use App\Models\UsersModel;
+use System\Drivers\Cache\RedisCache;
 
 class HomeController extends BaseController {
-    public function index() {
-        // Set cache data with a key and expiration time (in seconds)
-        Cache::set('homepage_data', $data, 3600); // Caches $data for 1 hour
+
+    protected $usersModel;
+    protected $cache;
+
+    public function __construct() {
+        $config = config('cache'); // Get cache configuration from config.php
+        $this->cache = new RedisCache($config);
+        $this->usersModel = new UsersModel(); // Initialize Users model
     }
-}
-```
 
-#### Example: Retrieving Cache Data
-
-```php
-use System\Drivers\Cache\Cache;
-
-class HomeController extends BaseController {
+    /**
+     * Home page, displays a list of users
+     */
     public function index() {
-        // Retrieve cache data using the key
-        $data = Cache::get('homepage_data');
+        $cacheKey = 'home_page';
 
-        if (!$data) {
-            // If cache data doesn't exist, perform your logic and set it
-            $data = $this->getFreshData();
-            Cache::set('homepage_data', $data, 3600);
+        // Check if cache exists
+        $cacheContent = $this->cache->get($cacheKey);
+        if ($cacheContent) {
+            echo $cacheContent;
+            echo 'Loaded from cache.<br />';
+            return;
         }
 
-        return $data;
+        // Fetch user list if not cached
+        $users = $this->usersModel->getUsersPaging(10, 1); // Get 10 users, page 1
+
+        // Set data for the view
+        $this->data('title', 'This is the Home Page');
+        $this->data('users', $users['data']);
+
+        // Render individual components
+        $header = Render::component('component/header', ['title' => $this->data('title')]);
+        $footer = Render::component('component/footer');
+
+        // Set data for main layout
+        $this->data('header', $header);
+        $this->data('footer', $footer);
+
+        // Render layout and view
+        $content = $this->render('themes', 'home/home');
+
+        // Store the rendered content in cache
+        $this->cache->set($cacheKey, $content, 600); // Cache for 10 minutes (600 seconds)
+
+        // Display the content
+        echo $content;
     }
 }
 ```
 
-#### Example: Deleting Cache Data
+### Steps to Enable Caching in Your Application
 
-```php
-use System\Drivers\Cache\Cache;
+1. **Configure Cache**: Set up your cache configuration in `application/config/config.php`:
+    ```php
+    'cache' => [
+        'cache_driver' => 'redis',
+        'cache_host' => '127.0.0.1',
+        'cache_port' => 6379,
+        'cache_username' => '',
+        'cache_password' => '',
+        'cache_database' => 0,
+    ],
+    ```
 
-class UserController extends BaseController {
-    public function updateUser($id) {
-        // Update user logic
-        // ...
+2. **Initialize Cache in Controller**: In your controller, initialize the `RedisCache` class with the cache configuration.
 
-        // Clear cache for specific data
-        Cache::delete('user_' . $id);
-    }
-}
-```
+3. **Set and Retrieve Cache**:
+    - Use `$this->cache->set($key, $value, $ttl)` to store data in the cache.
+    - Use `$this->cache->get($key)` to retrieve data from the cache.
 
-### Cache Drivers
-
-PHP-Fast's caching system supports multiple drivers. By default, the framework provides two drivers: `FilesCache` and `RedisCache`. You can implement additional drivers if needed by extending the `Cache` class.
-
-#### File Cache
-
-The `FilesCache` driver stores cache data as files on the server. This is a simple caching method that doesn't require any external services but may be slower for large-scale applications.
-
-- To use the file cache, set the driver in `config.php`:
-
-```php
-'cache_driver' => 'file',
-```
-
-#### Redis Cache
-
-The `RedisCache` driver uses a Redis server to store cache data, which provides fast, efficient, and persistent caching. It is suitable for larger applications and supports advanced cache operations.
-
-- To use the Redis cache, set the driver in `config.php`:
-
-```php
-'cache_driver' => 'redis',
-'cache_host' => '127.0.0.1',
-'cache_port' => 6379,
-'cache_database' => 0,
-```
-
-### Creating a Custom Cache Driver
-
-If you want to implement a custom cache driver, you can create a new class in the `system/drivers/cache/` directory that extends the `Cache` class.
-
-#### Example: Creating a Custom Cache Driver
-
-1. Create a new file in the `system/drivers/cache/` directory, e.g., `CustomCache.php`.
-2. Extend the `Cache` class and implement the required methods.
-
-```php
-namespace System\Drivers\Cache;
-
-class CustomCache extends Cache {
-    public function set($key, $value, $expiration = 0) {
-        // Implement custom set logic
-    }
-
-    public function get($key) {
-        // Implement custom get logic
-    }
-
-    public function delete($key) {
-        // Implement custom delete logic
-    }
-}
-```
-
-3. Update the cache configuration in `config.php` to use your custom driver:
-
-```php
-'cache_driver' => 'custom',
-```
+4. **Clear Cache**: You can delete specific cache entries using `$this->cache->delete($key)` or clear the entire cache with `$this->cache->clear()`.
 
 ### Notes
-- Always choose a caching driver that best suits the scale and requirements of your application.
-- Set appropriate expiration times for cached data to ensure data freshness and avoid stale cache issues.
-- Use cache sparingly for data that is frequently accessed but does not change often.
+- Caching is particularly useful for content that doesn't change frequently, like homepage data or user lists.
+- Always set an appropriate expiration time for cached data to prevent stale content.
+- Modify the cache implementation as needed to suit your application's requirements.
 
-By effectively using the caching system in PHP-Fast, you can significantly improve your application's performance and user experience.
+By leveraging the caching capabilities provided by PHP-Fast, you can improve the performance and scalability of your web applications.
+
+
+## 13. Error Handling
+
+Error handling in PHP-Fast is managed through the `AppException` class located in the `system/core/AppException.php` file. This class extends the built-in PHP `Exception` class and provides mechanisms for logging errors, rendering error pages, and displaying error details based on the application's debug mode.
+
+### AppException Overview
+
+The `AppException` class is responsible for handling exceptions that occur in the application. It includes the following features:
+
+- Customizable error messages.
+- Logging of error details using the `Logger` library.
+- Displaying error information to the user.
+- Rendering specific error pages based on the status code (e.g., 404 Not Found).
+
+### Handling Errors
+
+To handle errors using `AppException`, you can throw an exception in your application as follows:
+
+```php
+throw new \System\Core\AppException('An error occurred!', 0, null, 500);
+```
+
+After throwing an exception, use the `handle()` method to process it:
+
+```php
+try {
+    // Code that may throw an exception
+} catch (\System\Core\AppException $e) {
+    $e->handle();
+}
+```
+
+### Custom Error Pages
+
+The `AppException` class has built-in support for rendering custom error pages based on the status code. For a `404` error, it will call the `render404()` method, which attempts to load the `404` view from the themes directory using the `Render` library.
+
+### Logging Errors
+
+Errors are logged using the `Logger` class. When an exception is handled, the `handle()` method automatically calls `Logger::error()` to record the error message, file, and line number.
+
+### Debug Mode
+
+- When the application is in **debug mode** (`config('app')['debug']` is `true`), detailed error information, including the message, file, line number, and stack trace, is displayed to help with debugging.
+- When **debug mode** is disabled, a generic error message is shown to the user, preventing sensitive information from being exposed.
+
+### Conclusion
+
+The `AppException` class in PHP-Fast provides a flexible and robust mechanism for handling exceptions and errors. By utilizing built-in logging and rendering mechanisms, developers can quickly diagnose issues while maintaining a user-friendly experience for application end-users.
+
+### Example Usage in a Controller
+
+Here's an example of how to use `AppException` in a controller to handle errors:
+
+```php
+<?php
+namespace App\Controllers;
+
+use System\Core\BaseController;
+use System\Core\AppException;
+
+class UserController extends BaseController {
+
+    public function index() {
+        try {
+            // Simulate an error (e.g., user not found)
+            $user = $this->findUserById(1);
+            if (!$user) {
+                throw new AppException('User not found!', 0, null, 404);
+            }
+
+            // Render the user data
+            $this->render('user/profile', ['user' => $user]);
+
+        } catch (AppException $e) {
+            // Handle the exception
+            $e->handle();
+        }
+    }
+
+    private function findUserById($id) {
+        // Sample method to simulate user fetching; returns null to simulate "user not found"
+        return null;
+    }
+}
+```
+
+### Explanation
+
+1. **Throwing an Exception:**  
+   In the `index()` method, we simulate a user-fetching process using the `findUserById()` method. If the user is not found (returns `null`), an `AppException` is thrown with a custom error message and a `404` status code.
+
+2. **Handling the Exception:**  
+   The exception is caught in the `catch` block, where the `handle()` method of the `AppException` class is called. This method logs the error and renders the appropriate error page based on the application's debug mode.
+
+This approach ensures that errors are handled gracefully, logging the issue while providing feedback to the user without exposing sensitive information.
+
+
+## 14. Security
+
+Security is a crucial aspect of any web application. PHP-Fast provides various built-in mechanisms to help you secure your application against common security threats. This section will guide you through the available security features and how to use them effectively.
+
+### Data Sanitization
+
+Data sanitization is a process of cleaning input data to prevent malicious code, such as cross-site scripting (XSS) or SQL injection, from being executed in your application. PHP-Fast includes a helper to sanitize data in HTTP requests.
+
+#### Using `Security.php` Libraries
+
+The `security_helper.php` provides functions to clean and validate user input data. Here is how you can use it:
+xss_clean, clean_input, uri_security, url_slug, redirect, base_url
+1. Load the helper in your controller:
+    ```php
+
+    // Sanitize user input
+    $clean_input = clean_input($input_data);
+    ```
+
+2. The clean_input function will automatically strip out potentially harmful code from the input data, making it safer to use within your application.
+
+### Cross-Site Request Forgery (CSRF) Protection
+
+PHP-Fast has built-in support for CSRF protection, helping to prevent unauthorized commands from being transmitted via your authenticated sessions. The framework can generate and verify CSRF tokens for forms.
+
+#### Enabling CSRF Protection
+
+1. Open the `config.php` file in the `application/config` directory.
+2. Add or update the `security` configuration to include CSRF settings:
+    ```php
+    'security' => [
+        'csrf_protection' => true,
+        'csrf_token_name' => 'csrf_token',
+        'csrf_header_name' => 'X-CSRF-TOKEN',
+        'csrf_expiration' => 7200, // Token expiration in seconds
+    ],
+    ```
+
+
+### Password Hashing
+
+PHP-Fast recommends using PHP's built-in `Security::hashPassword` and `Security::verifyPassword` functions for securely hashing and verifying passwords. This helps to store user passwords securely in the database.
+
+#### Example of Password Hashing
+use System\Libraries\Security;
+1. To hash a password before saving it to the database:
+    ```php
+    $hashed_password = Security::hashPassword($user_password, PASSWORD_DEFAULT);
+    ```
+
+2. To verify a password during login:
+    ```php
+    if (Security::verifyPassword($input_password, $hashed_password_from_db)) {
+        // Password is correct
+    } else {
+        // Invalid password
+    }
+    ```
+
+### Additional Security Tips
+
+- **Always sanitize user input**: Clean all input data using the available helper functions to prevent XSS and SQL injection attacks.
+- **Use HTTPS**: Ensure your application runs over HTTPS to protect data in transit.
+- **Set secure cookie flags**: Use the `HttpOnly` and `Secure` flags for cookies to prevent unauthorized access.
+- **Limit file uploads**: Validate file uploads to prevent malicious files from being uploaded to your server.
+- **Update your framework**: Regularly update PHP-Fast to the latest version to apply security patches.
+
+By following these security guidelines and using the built-in features provided by PHP-Fast, you can help secure your web application against many common threats.
+
+
+## 15. Logging and Monitoring
+
+Effective logging and performance monitoring are crucial aspects of any web application. PHP-Fast provides a built-in `Logger` class for writing log messages and a `Monitor` class for measuring execution time, memory usage, and CPU load during requests.
+
+### Logging
+
+The `Logger` library allows you to log information, warnings, and errors into a specified log file. Logs are saved in the `writeable/logs/logger.log` file.
+
+### Using the Logger
+
+- **Info Log**: 
+    ```php
+    Logger::info('This is an informational message.');
+    ```
+
+- **Warning Log**:
+    ```php
+    Logger::warning('This is a warning message.');
+    ```
+
+- **Error Log**:
+    ```php
+    Logger::error('This is an error message.');
+    ```
+
+The `Logger` class also supports optional parameters for file name and line number, which can be used for more precise debugging.
+
+### Monitoring
+
+The `Monitor` library in PHP-Fast provides utilities for measuring the execution time, memory usage, and CPU load of a request from the moment the framework initializes.
+
+### Using the Monitor
+
+- **End Framework Monitoring**:
+    ```php
+    $metrics = Monitor::endFramework();
+    echo 'Execution Time: ' . $metrics['execution_time'] . ' seconds';
+    echo 'Memory Used: ' . Monitor::formatMemorySize($metrics['memory_used']);
+    echo 'CPU Usage: ' . $metrics['cpu_usage'];
+    ```
+
+The `Monitor::endFramework()` method returns an array containing the execution time, memory used, and CPU load for the current request. You can use this data for performance monitoring and optimization.
+
+### Conclusion
+
+The `Logger` and `Monitor` libraries in PHP-Fast provide essential tools for logging and performance monitoring, helping developers keep track of application behavior, troubleshoot issues, and optimize performance.
+
+## 16. Testing
+
+PHP-Fast provides a simple way to test different components of your application. Testing ensures that your application behaves as expected and helps catch potential bugs before deployment. This section covers basic unit and integration testing.
+
+### 16.1 Unit Testing
+
+Unit testing is the practice of testing individual units of code, such as functions or classes, to verify that they work as intended. With PHP-Fast, you can use PHPUnit, a popular testing framework for PHP.
+
+#### Setting Up PHPUnit
+
+1. First, install PHPUnit using Composer:
+    ```bash
+    composer require --dev phpunit/phpunit
+    ```
+
+2. After installation, you can run PHPUnit with:
+    ```bash
+    ./vendor/bin/phpunit
+    ```
+
+#### Writing Unit Tests
+
+Create a directory called `tests` in the root of your project if it does not already exist. Inside the `tests` directory, you can organize your test files. Here is an example of a simple unit test for a model:
+
+1. Create a test file inside the `tests` directory, e.g., `tests/Models/UsersModelTest.php`.
+2. Add the following code to the test file:
+
+    ```php
+    <?php
+
+    use PHPUnit\Framework\TestCase;
+    use App\Models\UsersModel;
+
+    class UsersModelTest extends TestCase
+    {
+        protected $model;
+
+        protected function setUp(): void
+        {
+            // Initialize the model before each test
+            $this->model = new UsersModel();
+        }
+
+        public function testAddUser()
+        {
+            $data = [
+                'username' => 'testuser',
+                'email' => 'testuser@example.com',
+            ];
+            
+            $result = $this->model->addUser($data);
+
+            // Assert that the result is true (user added successfully)
+            $this->assertTrue($result);
+        }
+
+        protected function tearDown(): void
+        {
+            // Clean up after each test
+            $this->model = null;
+        }
+    }
+    ```
+
+#### Running Unit Tests
+
+To run the unit tests, execute the following command in the terminal:
+    
+    ```bash
+    ./vendor/bin/phpunit tests
+    ```
+
+This command will execute all test files located in the `tests` directory. You can also specify a single test file to run:
+    
+    ```bash
+    ./vendor/bin/phpunit tests/Models/UsersModelTest.php
+    ```
+
+### 16.2 Integration Testing
+
+Integration testing involves testing the interaction between different components of the application, such as models and controllers. With PHP-Fast, you can create integration tests to verify that various parts of your application work together seamlessly.
+
+#### Writing Integration Tests
+
+Here’s an example of an integration test for a controller method that uses a model:
+
+1. Create a new test file, e.g., `tests/Controllers/UsersControllerTest.php`.
+2. Add the following code to the file:
+
+    ```php
+    <?php
+
+    use PHPUnit\Framework\TestCase;
+    use App\Controllers\UsersController;
+
+    class UsersControllerTest extends TestCase
+    {
+        protected $controller;
+
+        protected function setUp(): void
+        {
+            // Initialize the controller before each test
+            $this->controller = new UsersController();
+        }
+
+        public function testIndex()
+        {
+            // Simulate a request to the index method
+            $response = $this->controller->index();
+
+            // Assert that the response is not empty
+            $this->assertNotEmpty($response);
+
+            // Optionally, you can further assert the expected output or status code
+            $this->assertStringContainsString('Users List', $response);
+        }
+
+        protected function tearDown(): void
+        {
+            // Clean up after each test
+            $this->controller = null;
+        }
+    }
+    ```
+
+#### Running Integration Tests
+
+Run the integration tests using the same PHPUnit command:
+
+    ```bash
+    ./vendor/bin/phpunit tests
+    ```
+
+### 16.3 Testing Best Practices
+
+- **Set up a dedicated testing database**: To prevent tests from modifying production data, use a separate database for testing.
+- **Isolate tests**: Each test should be independent of others. Use the `setUp` and `tearDown` methods to initialize and clean up resources.
+- **Mock dependencies**: Use mocks and stubs for external services or dependencies that are not the focus of the test. PHPUnit provides built-in methods to create mock objects.
+- **Automate testing**: Incorporate your tests into a continuous integration (CI) pipeline to ensure that every code change is automatically tested.
+
+By implementing unit and integration tests in your PHP-Fast application, you can enhance the reliability and maintainability of your codebase.
+
+
+## 17. Deployment
+
+Deploying your PHP-Fast application to a production environment involves several steps to ensure that your application runs smoothly and securely. This section covers best practices and configurations for deploying your application.
+
+### Best Practices
+
+1. **Set Environment to Production**
+    - In `application/config/config.php`, set the `environment` key to `production`. This disables debugging and activates production-specific configurations.
+    ```php
+    'app' => [
+        'debug' => false,
+        'environment' => 'production',
+        'app_url' => 'https://your-production-url.com',
+        'app_name' => 'phpfast',
+        'app_timezone' => 'UTC'
+    ],
+    ```
+
+2. **Hide Error Messages**
+    - Make sure to hide error messages on your live site to prevent exposing sensitive information. Set the `debug` option to `false` in `config.php`.
+
+3. **Use HTTPS**
+    - Make sure your application is accessible over HTTPS. This can be configured at the server level (Apache, Nginx) and in your `app_url` configuration.
+
+4. **Database Security**
+    - Use strong passwords for database access.
+    - Restrict database access to only necessary IP addresses.
+
+5. **File Permissions**
+    - Ensure the correct file permissions for security. The `writeable/` directory should be writable by the web server:
+    ```bash
+    chmod -R 755 writeable/
+    ```
+    - Ensure other files are set to read-only (`644`) to prevent unauthorized modifications.
+
+6. **Environment Variables**
+    - Use environment variables to store sensitive data such as database credentials, cache settings, etc. This helps to keep them out of version control.
+
+### Production Configuration
+
+Here are some key points to configure your application for production:
+
+#### 1. Web Server Configuration
+
+- **Apache**: Set up a virtual host for your application, pointing the `DocumentRoot` to the `public/` directory.
+    ```apache
+    <VirtualHost *:80>
+        ServerName phpfast.net
+        DocumentRoot /home/phpfast.net/public_html/public
+
+        <Directory /home/phpfast.net/public_html/public>
+            AllowOverride All
+            Require all granted
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+    </VirtualHost>
+    ```
+
+.htaccess
+	```apache
+	RewriteEngine On
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^(.*)$ index.php/$1 [L]
+	```
+
+- **Nginx**: Set up a server block for your application, pointing `root` to the `public/` directory.
+    ```nginx
+    server {
+        listen 80;
+        server_name phpfast.net;
+        root /home/phpfast.net/public_html/public;
+
+        index index.php index.html index.htm;
+
+        location / {
+            try_files $uri $uri/ /index.php?$query_string;
+        }
+
+        location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            include fastcgi_params;
+        }
+
+        location ~ /\.ht {
+            deny all;
+        }
+    }
+    ```
+
+- **Nginx**: Or you can upload all script into /home/phpfast.net/ and public into `public_html` directory. And change root into this:
+    ```nginx
+    root /home/phpfast.net/public_html;
+    ```
+
+
+#### 2. Optimizing Performance
+
+- **Enable Caching**: Make sure to use a cache driver (e.g., Redis) to speed up your application. In `config.php`, set the `cache_driver` to `redis` or other caching methods:
+    ```php
+    'cache' => [
+        'cache_driver' => 'redis',
+        'cache_host' => '127.0.0.1',
+        'cache_port' => 6379,
+        'cache_database' => 0,
+    ],
+    ```
+
+- **Use a PHP Accelerator**: Install and enable `Opcache` on your production server to cache the compiled PHP code and improve performance.
+
+- **Minify Assets**: Minify your CSS, JavaScript, and HTML files to reduce page load times.
+
+- **Optimize Database**: Use indexes, optimize queries, and configure your database for production use.
+
+#### 3. Logging and Monitoring
+
+- Make sure the logs are being written to the `writeable/logs` directory. Adjust the logging level to `ERROR` in production to avoid excessive log output.
+
+- Set up server monitoring to keep an eye on the performance and health of your application.
+
+### Conclusion
+
+Deploying PHP-Fast requires some configuration and security practices to ensure your application runs smoothly in a production environment. Follow the best practices outlined here, configure your web server appropriately, and make use of environment variables to keep your application secure.
