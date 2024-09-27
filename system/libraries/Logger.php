@@ -44,7 +44,7 @@ class Logger {
 
         // Kiểm tra và tạo thư mục log nếu chưa tồn tại
         if (!file_exists(dirname($logFile))) {
-            mkdir(dirname($logFile), 0777, true);
+            mkdir(dirname($logFile), 0755, true);
         }
 
         // Ghi log vào file

@@ -104,7 +104,7 @@ To install PHP-Fast using Git, follow these steps:
     ```
 5. Set the correct permissions for the `writeable/` directory:
     ```bash
-    chmod -R 777 writeable/
+    chmod -R 755 writeable/
     ```
 6. Configure your web server to point to the `public/` directory as the root directory of your application.
 
@@ -122,7 +122,7 @@ To install PHP-Fast using Git, follow these steps:
     ```
 5. Set the correct permissions for the `writeable/` directory:
     ```bash
-    chmod -R 777 writeable/
+    chmod -R 755 writeable/
     ```
 6. Set up your web server to use the `public/` directory as the document root.
 
