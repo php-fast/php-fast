@@ -52,10 +52,10 @@ class Bootstrap {
         // Khởi tạo đối tượng Router
         $routes = $this->routes;
         // Load routes cho web
-        require_once ROOT_PATH . '/application/Routes/web.php';
+        require_once ROOT_PATH . '/application/Routes/Web.php';
         // Load routes cho API (nếu có)
-        if (file_exists(ROOT_PATH . '/application/Routes/api.php')) {
-            require_once ROOT_PATH . '/application/Routes/api.php';
+        if (file_exists(ROOT_PATH . '/application/Routes/Api.php')) {
+            require_once ROOT_PATH . '/application/Routes/Api.php';
         }
     }    
 

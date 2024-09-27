@@ -13,7 +13,7 @@ if (!defined('ROOT_PATH')) {
  */
 function load_helpers(array $helpers = []) {
     foreach ($helpers as $helper) {
-        $helperPath = ROOT_PATH . '/system/Helpers/' . $helper . '_helper.php';
+        $helperPath = ROOT_PATH . '/system/Helpers/' . ucfirst($helper) . '_helper.php';
         if (file_exists($helperPath)) {
             require_once $helperPath;
         } else {
