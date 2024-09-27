@@ -13,11 +13,6 @@ This framework includes all the essential functionalities required for web appli
     - Using Github
     - Manual Installation
 3. [Directory Structure](#3-directory-structure)
-    - application/
-    - public/
-    - system/
-    - vendor/
-    - writeable/
 4. [Configuration](#4-configuration)
     - Configuration Files
     - Environment Variables
@@ -135,8 +130,8 @@ PHP-Fast follows a well-organized directory structure to keep the application cl
 ```php
 ROOT
 ├── application/                  # Application-specific files
-│   ├── config/                   # Configuration files
-│   │   └── config.php            # Main configuration file
+│   ├── Config/                   # Configuration files
+│   │   └── Config.php            # Main configuration file
 │   ├── Controllers/              # Controllers for handling requests
 │   │   ├── Api/                  # API-related Controllers
 │   │   │   └── UsersController.php # Controller for user-related API
@@ -146,10 +141,10 @@ ROOT
 │   │   └── PermissionMiddleware.php # Handles user permissions
 │   ├── Models/                   # Models for database interactions
 │   │   └── UsersModel.php        # Model for interacting with the users' table
-│   ├── routes/                   # Route definitions
-│   │   ├── api.php               # API route definitions
-│   │   └── web.php               # Web route definitions
-│   └── views/                    # View files (HTML templates)
+│   ├── Routes/                   # Route definitions
+│   │   ├── Api.php               # API route definitions
+│   │   └── Web.php               # Web route definitions
+│   └── Views/                    # View files (HTML templates)
 │       ├── default/              # Default view directory
 │       │   ├── component/        # Reusable components (e.g., header, footer)
 │       │   │   ├── footer.php    # Footer component
@@ -184,11 +179,11 @@ ROOT
 │   │   │   ├── Database.php      # Base database class
 │   │   │   ├── MysqlDriver.php   # MySQL-specific database driver
 │   │   │   └── PostgresqlDriver.php # PostgreSQL-specific database driver
-│   ├── helpers/                  # Helper functions for various tasks
+│   ├── Helpers/                  # Helper functions for various tasks
 │   │   ├── Core_helper.php       # Core helper functions
 │   │   ├── Security_helper.php   # Security-related helper functions
 │   │   └── Uri_helper.php        # URL-related helper functions
-│   └── libraries/                # Common system libraries
+│   └── Libraries/                # Common system libraries
 │       ├── Logger.php            # Logging utility
 │       ├── Monitor.php           # Performance monitoring utility
 │       ├── Render.php            # View rendering and layout handling
@@ -1635,12 +1630,12 @@ Here are some key points to configure your application for production:
     ```
 
 .htaccess
-	```apache
-	RewriteEngine On
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^(.*)$ index.php/$1 [L]
-	```
+    ```apache
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php/$1 [L]
+    ```
 
 - **Nginx**: Set up a server block for your application, pointing `root` to the `public/` directory.
     ```nginx
