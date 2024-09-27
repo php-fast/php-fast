@@ -11,18 +11,18 @@ $routes->get('admin/index/', 'AdminController::index');
 $routes->get('admin/(:any)/(:any)', 'AdminController::$1:$2');
 
 $routes->get('admin/(:any)', 'AdminController::$1', [
-    \App\Middlewares\AuthMiddleware::class,
-    \App\Middlewares\PermissionMiddleware::class
+    \App\Middleware\AuthMiddleware::class,
+    \App\Middleware\PermissionMiddleware::class
 ]); //router de khi goi bat ky admin/string nào nó cũng gọi đến Controller -> Action
 
 $routes->post('admin/edit', 'AdminController::edit', [
-    \App\Middlewares\AuthMiddleware::class,
-    \App\Middlewares\PermissionMiddleware::class
+    \App\Middleware\AuthMiddleware::class,
+    \App\Middleware\PermissionMiddleware::class
 ]);
 
 $routes->delete('admin/delete', 'AdminController::delete', [
-    \App\Middlewares\AuthMiddleware::class,
-    \App\Middlewares\PermissionMiddleware::class
+    \App\Middleware\AuthMiddleware::class,
+    \App\Middleware\PermissionMiddleware::class
 ]);
 
 

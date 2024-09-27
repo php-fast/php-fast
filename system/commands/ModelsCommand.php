@@ -7,7 +7,8 @@ class ModelsCommand {
      */
     public function create($modelName) {
         // Define the path for the new model
-        $modelPath = ROOT_PATH . '/application/models/' . ucfirst($modelName) . 'Model.php';
+        $modelName = ucfirst($modelName);
+        $modelPath = ROOT_PATH . '/application/Models/' . ucfirst($modelName) . 'Model.php';
         
         // Check if the model already exists
         if (file_exists($modelPath)) {

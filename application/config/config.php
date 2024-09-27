@@ -42,7 +42,7 @@ return [
         'cache_database' => 0,
     ],
     'theme' => [
-        'theme_path' => 'application/views',
+        'theme_path' => 'application/Views',
         'theme_name' => 'default'
     ]
     

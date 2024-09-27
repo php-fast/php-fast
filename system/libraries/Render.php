@@ -30,7 +30,7 @@ class Render {
             $themeConfig = config('theme');
             // Lưu tên theme và đường dẫn theme
             self::$themeName = $themeConfig['theme_name'] ?? 'default';
-            $themeRelativePath = $themeConfig['theme_path'] ?? 'application/views';
+            $themeRelativePath = $themeConfig['theme_path'] ?? 'application/Views';
             self::$themePath = ROOT_PATH . '/' . $themeRelativePath . '/' . self::$themeName . '/';
             unset($themeConfig);
             unset($themeRelativePath);

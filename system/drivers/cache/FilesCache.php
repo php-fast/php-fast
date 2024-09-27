@@ -9,7 +9,7 @@ class FilesCache extends Cache {
      * Kết nối đến hệ thống lưu trữ file
      */
     protected function connect() {
-        $this->cacheDir = ROOT_PATH . '/writeable/cache/';
+        $this->cacheDir = ROOT_PATH . '/writeable/Cache/';
         if (!is_dir($this->cacheDir)) {
             mkdir($this->cacheDir, 0755, true);
         }

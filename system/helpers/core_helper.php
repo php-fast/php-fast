@@ -13,7 +13,7 @@ if (!defined('ROOT_PATH')) {
  */
 function load_helpers(array $helpers = []) {
     foreach ($helpers as $helper) {
-        $helperPath = ROOT_PATH . '/system/helpers/' . $helper . '_helper.php';
+        $helperPath = ROOT_PATH . '/system/Helpers/' . $helper . '_helper.php';
         if (file_exists($helperPath)) {
             require_once $helperPath;
         } else {
@@ -114,7 +114,7 @@ function config($key) {
     static $config;
 
     if (!$config) {
-        $config = require ROOT_PATH . '/application/config/config.php';
+        $config = require ROOT_PATH . '/application/Config/Config.php';
     }
     return $config[$key] ?? null;
 }

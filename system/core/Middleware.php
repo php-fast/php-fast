@@ -3,7 +3,7 @@ namespace System\Core;
 
 class Middleware {
 
-    protected $middlewares = [];
+    protected $Middleware = [];
     protected $current = 0;
 
     /**
@@ -12,7 +12,7 @@ class Middleware {
      * @param callable|string $middleware Tên middleware hoặc callback
      */
     public function add($middleware) {
-        $this->middlewares[] = $middleware;
+        $this->Middleware[] = $middleware;
     }
 
     /**
@@ -24,8 +24,8 @@ class Middleware {
      */
     public function handle($request, $next) {
         // Nếu còn middleware chưa được thực thi
-        if ($this->current < count($this->middlewares)) {
-            $middleware = $this->middlewares[$this->current];
+        if ($this->current < count($this->Middleware)) {
+            $middleware = $this->Middleware[$this->current];
             $this->current++;
 
             // Nếu middleware là callback - Thực thi middleware hiện tại

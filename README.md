@@ -23,8 +23,8 @@ This framework includes all the essential functionalities required for web appli
     - Environment Variables
 5. [Command-Line Interface (`php init`)](#5-command-line)
     - [Database Synchronization (`table`)]
-    - [Create Controller (`controllers`)]
-    - [Create Model (`models`)]
+    - [Create Controller (`Controllers`)]
+    - [Create Model (`Models`)]
 6. [Routing](#6-routing)
     - Defining Routes
     - Dynamic Routing
@@ -70,9 +70,9 @@ PHP-Fast is built to streamline the development process, providing an intuitive 
 
 ### Features
 - Lightweight and fast MVC framework.
-- Built-in CLI tool for generating controllers, models, and synchronizing database tables.
+- Built-in CLI tool for generating Controllers, Models, and synchronizing database tables.
 - Flexible routing with support for middleware.
-- Comprehensive cache management with multiple drivers.
+- Comprehensive cache management with multiple Drivers.
 - Modular structure with a focus on simplicity and extensibility.
 - Integrated error handling and logging for streamlined debugging.
 
@@ -137,14 +137,14 @@ ROOT
 ├── application/                  # Application-specific files
 │   ├── config/                   # Configuration files
 │   │   └── config.php            # Main configuration file
-│   ├── controllers/              # Controllers for handling requests
-│   │   ├── Api/                  # API-related controllers
+│   ├── Controllers/              # Controllers for handling requests
+│   │   ├── Api/                  # API-related Controllers
 │   │   │   └── UsersController.php # Controller for user-related API
 │   │   └── HomeController.php    # Main controller for web requests
-│   ├── middlewares/              # Custom middleware for request handling
+│   ├── Middleware/              # Custom middleware for request handling
 │   │   ├── AuthMiddleware.php    # Handles authentication
 │   │   └── PermissionMiddleware.php # Handles user permissions
-│   ├── models/                   # Models for database interactions
+│   ├── Models/                   # Models for database interactions
 │   │   └── UsersModel.php        # Model for interacting with the users' table
 │   ├── routes/                   # Route definitions
 │   │   ├── api.php               # API route definitions
@@ -164,30 +164,30 @@ ROOT
 │   └── index.php                 # Entry point for all HTTP requests
 │
 ├── system/                       # Core framework files
-│   ├── commands/                 # Command-line tools
-│   │   ├── ControllersCommand.php # CLI command to create controllers
-│   │   ├── ModelsCommand.php     # CLI command to create models
+│   ├── Commands/                 # Command-line tools
+│   │   ├── ControllersCommand.php # CLI command to create Controllers
+│   │   ├── ModelsCommand.php     # CLI command to create Models
 │   │   └── TableCommand.php      # CLI command to sync database tables
-│   ├── core/                     # Core system files of the framework
+│   ├── Core/                     # Core system files of the framework
 │   │   ├── AppException.php      # Custom exception handler
-│   │   ├── BaseController.php    # Base class for all controllers
-│   │   ├── BaseModel.php         # Base class for all models
+│   │   ├── BaseController.php    # Base class for all Controllers
+│   │   ├── BaseModel.php         # Base class for all Models
 │   │   ├── Bootstrap.php         # Framework initialization and routing
 │   │   ├── Middleware.php        # Base class for middleware
 │   │   └── Router.php            # Handles routing and directs requests
-│   ├── drivers/                  # Drivers for handling caching and databases
-│   │   ├── cache/                # Cache handling
+│   ├── Drivers/                  # Drivers for handling caching and databases
+│   │   ├── Cache/                # Cache handling
 │   │   │   ├── Cache.php         # Base cache class
 │   │   │   ├── FilesCache.php    # File-based caching implementation
 │   │   │   └── RedisCache.php    # Redis-based caching implementation
-│   │   ├── database/             # Database handling
+│   │   ├── Database/             # Database handling
 │   │   │   ├── Database.php      # Base database class
 │   │   │   ├── MysqlDriver.php   # MySQL-specific database driver
 │   │   │   └── PostgresqlDriver.php # PostgreSQL-specific database driver
 │   ├── helpers/                  # Helper functions for various tasks
-│   │   ├── core_helper.php       # Core helper functions
-│   │   ├── security_helper.php   # Security-related helper functions
-│   │   └── uri_helper.php        # URL-related helper functions
+│   │   ├── Core_helper.php       # Core helper functions
+│   │   ├── Security_helper.php   # Security-related helper functions
+│   │   └── Uri_helper.php        # URL-related helper functions
 │   └── libraries/                # Common system libraries
 │       ├── Logger.php            # Logging utility
 │       ├── Monitor.php           # Performance monitoring utility
@@ -211,7 +211,7 @@ This directory structure provides a clear overview of where different types of f
 
 ## 4. Configuration
 
-PHP-Fast uses a simple and flexible configuration system. The main configuration file is located in the `application/config/config.php`. This file contains various settings for your application, including app settings, database, email, caching, and themes.
+PHP-Fast uses a simple and flexible configuration system. The main configuration file is located in the `application/Config/Config.php`. This file contains various settings for your application, including app settings, database, email, caching, and themes.
 
 ### Basic Configuration
 
@@ -256,11 +256,11 @@ Here is a breakdown of the key configuration options available in `config.php`:
 - `theme_name`: Name of the active theme.
 
 ### Modifying Configuration
-To change these settings, open `application/config/config.php` and update the corresponding values based on your environment and requirements.
+To change these settings, open `application/Config/Config.php` and update the corresponding values based on your environment and requirements.
 
 ## 5. Command-Line
 
-PHP-Fast includes a built-in command-line interface (CLI) to simplify the creation of controllers, models, and database synchronization. The CLI tool allows you to quickly scaffold various components of your application and perform essential tasks without manual coding.
+PHP-Fast includes a built-in command-line interface (CLI) to simplify the creation of Controllers, Models, and database synchronization. The CLI tool allows you to quickly scaffold various components of your application and perform essential tasks without manual coding.
 
 ### Usage
 
@@ -272,17 +272,17 @@ php init <command> <name>
 Synchronizes the database table based on the model's schema. This command reads the schema defined in the model's _schema() method and applies the changes to the database.
 Command: `php init table <name>`
 
-### 2. Create Controller (controllers)
-Generates a new controller file in the application/controllers directory. The command creates a basic controller template, helping you quickly set up new features for your application.
-Command: `php init controllers <name>`
+### 2. Create Controller (Controllers)
+Generates a new controller file in the application/Controllers directory. The command creates a basic controller template, helping you quickly set up new features for your application.
+Command: `php init Controllers <name>`
 
-### 3. Create Model (models)
-Creates a new model file in the application/models directory. The command provides a default model template, including the _schema() method for defining the database table's structure and CRUD functions.
-Command: `php init models <name>`
+### 3. Create Model (Models)
+Creates a new model file in the application/Models directory. The command provides a default model template, including the _schema() method for defining the database table's structure and CRUD functions.
+Command: `php init Models <name>`
 
 ## 6. Routing
 
-PHP-Fast provides a flexible routing system that maps HTTP requests to specific controllers and methods within your application. Routing definitions are located in the `application/routes` directory and are typically separated into files such as `web.php` for web routes and `api.php` for API routes.
+PHP-Fast provides a flexible routing system that maps HTTP requests to specific Controllers and methods within your application. Routing definitions are located in the `application/Routes` directory and are typically separated into files such as `web.php` for web routes and `api.php` for API routes.
 
 ### Defining Routes
 
@@ -357,25 +357,25 @@ $routes->get('article/(:alphanumdash)', 'ArticleController::read:$1');
 You can apply middleware to routes to handle specific logic before a request reaches the controller. Here's an example of applying middleware:
 
 // Applying middleware to a single route
-$routes->get('admin', 'AdminController::index', [\App\Middlewares\AuthMiddleware::class]);
+$routes->get('admin', 'AdminController::index', [\App\Middleware\AuthMiddleware::class]);
 
 // Applying middleware to multiple routes
 $routes->group('admin', function($routes) {
     $routes->get('dashboard', 'AdminController::dashboard');
     $routes->post('settings', 'AdminController::saveSettings');
-}, [\App\Middlewares\AuthMiddleware::class]);
+}, [\App\Middleware\AuthMiddleware::class]);
 
 ```
 
 ## 7. Creating a Controller
 
-Controllers in PHP-Fast are responsible for handling HTTP requests and returning responses. They act as a bridge between models, views, and other application components. All controllers are stored in the `application/controllers` directory.
+Controllers in PHP-Fast are responsible for handling HTTP requests and returning responses. They act as a bridge between Models, views, and other application components. All Controllers are stored in the `application/Controllers` directory.
 
 ### Creating a New Controller
 
 To create a new controller manually, follow these steps:
 
-1. Navigate to the `application/controllers` directory.
+1. Navigate to the `application/Controllers` directory.
 2. Create a new file with the name of your controller, e.g., `ProductsController.php`.
 3. Define the controller class by extending `System\Core\BaseController`.
 
@@ -407,12 +407,12 @@ class ProductsController extends BaseController
 ### Using the Command-Line Interface
 You can also use the built-in command-line tool to create a new controller:
 ```bash
-php init controllers <controller-name>
+php init Controllers <controller-name>
 ```
 Example:
-php init controllers Welcome
+php init Controllers Welcome
 
-This will create a `ProductsController.php` file in the `application/controllers` directory with a basic structure.
+This will create a `ProductsController.php` file in the `application/Controllers` directory with a basic structure.
 
 #### Basic Structure of a Controller
 A controller in PHP-Fast typically consists of several methods, each corresponding to a specific action or HTTP request (e.g., viewing a list, creating a new item, updating, or deleting). Here's an example structure:
@@ -459,7 +459,7 @@ class UsersController extends BaseController
 ```
 
 #### Routing to a Controller
-To route HTTP requests to a controller, define your routes in application/routes/web.php or application/routes/api.php. Here is an example:
+To route HTTP requests to a controller, define your routes in application/Routes/web.php or application/Routes/api.php. Here is an example:
 
 ```php
 $routes->get('products', 'ProductsController::index');
@@ -475,11 +475,11 @@ ProductsController::show:$1 is called when /products/{id} is accessed, where {id
 ### Using Middleware in a Controller
 Controllers can also use middleware to handle tasks like authentication and permission checks. Here's how to apply middleware in a controller:
 ```php
-$routes->get('admin/products', 'ProductsController::index', [\App\Middlewares\AuthMiddleware::class]);
+$routes->get('admin/products', 'ProductsController::index', [\App\Middleware\AuthMiddleware::class]);
 ```
 
 ### Accessing Models in a Controller
-Controllers can access models to interact with the database. Here's an example of loading a model and using it in a controller:
+Controllers can access Models to interact with the database. Here's an example of loading a model and using it in a controller:
 
 ```php
 <?php
@@ -520,21 +520,21 @@ echo $this->render('themes', 'home/home');
 
 ## 8. Creating a Model
 
-Models in PHP-Fast are responsible for interacting with the database. They contain methods for querying, inserting, updating, and deleting data in the database. PHP-Fast provides a base model (`BaseModel`) that your models can extend to use common database operations easily.
+Models in PHP-Fast are responsible for interacting with the database. They contain methods for querying, inserting, updating, and deleting data in the database. PHP-Fast provides a base model (`BaseModel`) that your Models can extend to use common database operations easily.
 
 ### Using Command to Create Models
 
 To quickly generate a new model, you can use the command-line tool:
 
 ```bash
-php init models <model-name>
+php init Models <model-name>
 
-This command will create a new model file in the application/models directory.
+This command will create a new model file in the application/Models directory.
 ```bash
-php init models users
+php init Models users
 ```
 
-In this section, we will walk through the `BaseModel` class, which provides the fundamental database operations and utilities for other models in the PHP-Fast framework. The `BaseModel` class defines various methods that enable database interactions such as querying data, inserting, updating, deleting, and more.
+In this section, we will walk through the `BaseModel` class, which provides the fundamental database operations and utilities for other Models in the PHP-Fast framework. The `BaseModel` class defines various methods that enable database interactions such as querying data, inserting, updating, deleting, and more.
 
 ### Explanation of Key Methods
 
@@ -676,7 +676,7 @@ This will use the schema defined in UsersModel to create or update the users tab
 ### Important Notes
 The fillable property defines which columns can be mass-assigned, while the guarded property lists columns that should not be modified directly.
 The _schema() method in the model defines the structure of the table and is used for database synchronization.
-Use the built-in methods in BaseModel (e.g., list, row, add, set, del) to simplify database operations in your models.
+Use the built-in methods in BaseModel (e.g., list, row, add, set, del) to simplify database operations in your Models.
 
 ## 9. Creating Middleware
 
@@ -686,14 +686,14 @@ Middleware in PHP-Fast allows you to filter HTTP requests entering your applicat
 
 To create a new middleware, follow these steps:
 
-1. Navigate to the `application/middlewares` directory.
+1. Navigate to the `application/Middleware` directory.
 2. Create a new file, for example, `AuthMiddleware.php`.
 3. Define your middleware logic in the new file. Here's an example of a basic authentication middleware:
 
 ```php
 <?php
 
-namespace App\Middlewares;
+namespace App\Middleware;
 
 class AuthMiddleware {
     public function handle($request, $next) {
@@ -713,19 +713,19 @@ Middleware in PHP-Fast provides a convenient mechanism for filtering HTTP reques
 
 ### Adding Middleware
 
-All middleware classes should be placed in the `application/middlewares` directory. A middleware class contains a `handle` method, which will be executed when the middleware is applied to a route or controller.
+All middleware classes should be placed in the `application/Middleware` directory. A middleware class contains a `handle` method, which will be executed when the middleware is applied to a route or controller.
 
 ### Example: Creating an Authentication Middleware
 
 Let's create a simple `AuthMiddleware` that checks if a user is logged in before allowing access to certain routes.
 
-1. Navigate to `application/middlewares/` and create a new file named `AuthMiddleware.php`.
+1. Navigate to `application/Middleware/` and create a new file named `AuthMiddleware.php`.
 
 2. Add the following code to `AuthMiddleware.php`:
 
     ```php
     <?php
-    namespace App\Middlewares;
+    namespace App\Middleware;
 
     class AuthMiddleware {
         public function handle($request, $next) {
@@ -741,12 +741,12 @@ Let's create a simple `AuthMiddleware` that checks if a user is logged in before
 
 ### Applying Middleware to Routes
 
-To apply middleware to a route, pass the middleware class name as an array in the route definition within `application/routes/web.php` or `application/routes/api.php`.
+To apply middleware to a route, pass the middleware class name as an array in the route definition within `application/Routes/web.php` or `application/Routes/api.php`.
 
 Example: Applying `AuthMiddleware` to a route in `web.php`:
 
     ```php
-    $routes->get('admin', 'AdminController::index', [\App\Middlewares\AuthMiddleware::class]);
+    $routes->get('admin', 'AdminController::index', [\App\Middleware\AuthMiddleware::class]);
     ```
 
 In this example, when the user accesses the `admin` route, the `AuthMiddleware`'s `handle` method is executed before the `AdminController`'s `index` method.
@@ -755,13 +755,13 @@ In this example, when the user accesses the `admin` route, the `AuthMiddleware`'
 
 Similarly, you can create a `PermissionMiddleware` to manage access control for different parts of your application.
 
-1. Create a new file in `application/middlewares/` named `PermissionMiddleware.php`.
+1. Create a new file in `application/Middleware/` named `PermissionMiddleware.php`.
 
 2. Add the following code:
 
     ```php
     <?php
-    namespace App\Middlewares;
+    namespace App\Middleware;
 
     class PermissionMiddleware {
         public function handle($request, $next, $permissions = []) {
@@ -784,13 +784,13 @@ Similarly, you can create a `PermissionMiddleware` to manage access control for 
 
     ```php
     $routes->get('admin/settings', 'AdminController::settings', [
-        [\App\Middlewares\PermissionMiddleware::class, ['manage_settings']]
+        [\App\Middleware\PermissionMiddleware::class, ['manage_settings']]
     ]);
     ```
 
 ### Using Middleware in Controllers
 
-You can also use middleware in controllers to filter access to specific methods.
+You can also use middleware in Controllers to filter access to specific methods.
 
 1. In your controller (e.g., `AdminController.php`), call the middleware within the method:
 
@@ -798,7 +798,7 @@ You can also use middleware in controllers to filter access to specific methods.
     namespace App\Controllers;
 
     use System\Core\BaseController;
-    use App\Middlewares\AuthMiddleware;
+    use App\Middleware\AuthMiddleware;
 
     class AdminController extends BaseController {
         public function index() {
@@ -813,11 +813,11 @@ You can also use middleware in controllers to filter access to specific methods.
 
 ### Conclusion
 
-Middleware provides a clean and reusable way to handle common tasks, such as authentication and permission checks, in your application. By creating and applying middleware to routes or within controllers, you can enforce consistent behavior and security across your web application.
+Middleware provides a clean and reusable way to handle common tasks, such as authentication and permission checks, in your application. By creating and applying middleware to routes or within Controllers, you can enforce consistent behavior and security across your web application.
 
 ## 10. Views and Templates
 
-PHP-Fast provides a flexible view rendering system to help you create dynamic web pages. The views are stored in the `application/views/` directory and support layouts, components, and data passing.
+PHP-Fast provides a flexible view rendering system to help you create dynamic web pages. The views are stored in the `application/Views/` directory and support layouts, components, and data passing.
 
 ### Directory Structure
 
@@ -842,7 +842,7 @@ application/
 
 ### Creating a View
 
-1. Navigate to the `application/views/` directory.
+1. Navigate to the `application/Views/` directory.
 2. Create a new `.php` file in the desired directory (e.g., `home/home.php`).
 3. Add your HTML and PHP content to the file:
     ```php
@@ -854,7 +854,7 @@ application/
 
 A layout is a common template file (e.g., `header`, `footer`) used to wrap around the main content of your pages. You can store layouts in the `component/` directory. 
 
-- Example `header.php` (located at `application/views/default/component/header.php`):
+- Example `header.php` (located at `application/Views/default/component/header.php`):
     ```php
     <!DOCTYPE html>
     <html>
@@ -867,7 +867,7 @@ A layout is a common template file (e.g., `header`, `footer`) used to wrap aroun
     </header>
     ```
 
-- Example `footer.php` (located at `application/views/default/component/footer.php`):
+- Example `footer.php` (located at `application/Views/default/component/footer.php`):
     ```php
     <footer>
         <p>&copy; 2024 PHP-Fast</p>
@@ -952,7 +952,7 @@ Here’s an example of a full page rendering using the `Render` library in a con
 
 ### Error Pages
 
-Custom error pages can be created and placed in the `application/views/default/` directory. For example, a 404 error page can be defined in `404.php`.
+Custom error pages can be created and placed in the `application/Views/default/` directory. For example, a 404 error page can be defined in `404.php`.
 
 - Example `404.php`:
     ```php
@@ -971,23 +971,23 @@ You can then handle errors in your controller and render the error page when nec
 
 ### Conclusion
 
-The view system in PHP-Fast allows you to build complex pages with ease. You can create layouts, include components, and pass data from controllers to views. This approach helps maintain a clean and modular codebase, making it easier to manage and extend your application.
+The view system in PHP-Fast allows you to build complex pages with ease. You can create layouts, include components, and pass data from Controllers to views. This approach helps maintain a clean and modular codebase, making it easier to manage and extend your application.
 
 
 ## 11. Database Integration
 
-PHP-Fast provides built-in support for integrating with databases. It includes a Database class and drivers to help you interact with your database using models and a query builder. The default configuration for the database is set in the `application/config/config.php` file, allowing you to easily manage different database connections.
+PHP-Fast provides built-in support for integrating with databases. It includes a Database class and Drivers to help you interact with your database using Models and a query builder. The default configuration for the database is set in the `application/Config/Config.php` file, allowing you to easily manage different database connections.
 
 ### Using Models
 
-Models are classes that allow you to interact with your database. Each model represents a table in your database and contains methods to query and manipulate data. By default, models are located in the `application/models` directory.
+Models are classes that allow you to interact with your database. Each model represents a table in your database and contains methods to query and manipulate data. By default, Models are located in the `application/Models` directory.
 
 #### Creating a Model
 
 You can create a new model manually or use the command-line tool to generate it:
 
 **Manually:**
-1. Navigate to `application/models`.
+1. Navigate to `application/Models`.
 2. Create a new file, e.g., `UsersModel.php`.
 3. Define the model class:
 
@@ -1016,7 +1016,7 @@ class UsersModel extends BaseModel {
 
 #### Interacting with the Database
 
-After creating your model, you can use it in your controllers to interact with the database.
+After creating your model, you can use it in your Controllers to interact with the database.
 
 **Example: Fetching all users:**
 
@@ -1060,11 +1060,11 @@ $usersModel->insert($data);
 
 ### Database Drivers
 
-PHP-Fast supports multiple database drivers. The available drivers are set up in the `system/drivers/database` directory. By default, the framework supports `MysqlDriver` and `PostgresqlDriver`.
+PHP-Fast supports multiple database Drivers. The available Drivers are set up in the `system/Drivers/database` directory. By default, the framework supports `MysqlDriver` and `PostgresqlDriver`.
 
 #### Switching Database Drivers
 
-To change the database driver, update the `db_driver` setting in `application/config/config.php`:
+To change the database driver, update the `db_driver` setting in `application/Config/Config.php`:
 
 ```php
 'db' => [
@@ -1121,7 +1121,7 @@ PHP-Fast offers a flexible caching mechanism that allows you to store and retrie
 
 ### Basic Usage
 
-To utilize caching in your controllers, use the `RedisCache` class provided by the framework. The cache configuration is defined in `application/config/config.php`.
+To utilize caching in your Controllers, use the `RedisCache` class provided by the framework. The cache configuration is defined in `application/Config/Config.php`.
 
 #### Example: Using Caching in `HomeController`
 
@@ -1190,7 +1190,7 @@ class HomeController extends BaseController {
 
 ### Steps to Enable Caching in Your Application
 
-1. **Configure Cache**: Set up your cache configuration in `application/config/config.php`:
+1. **Configure Cache**: Set up your cache configuration in `application/Config/Config.php`:
     ```php
     'cache' => [
         'cache_driver' => 'redis',
@@ -1220,7 +1220,7 @@ By leveraging the caching capabilities provided by PHP-Fast, you can improve the
 
 ## 13. Error Handling
 
-Error handling in PHP-Fast is managed through the `AppException` class located in the `system/core/AppException.php` file. This class extends the built-in PHP `Exception` class and provides mechanisms for logging errors, rendering error pages, and displaying error details based on the application's debug mode.
+Error handling in PHP-Fast is managed through the `AppException` class located in the `system/Core/AppException.php` file. This class extends the built-in PHP `Exception` class and provides mechanisms for logging errors, rendering error pages, and displaying error details based on the application's debug mode.
 
 ### AppException Overview
 
@@ -1324,7 +1324,7 @@ Data sanitization is a process of cleaning input data to prevent malicious code,
 
 #### Using `Security.php` Libraries
 
-The `security_helper.php` provides functions to clean and validate user input data. Here is how you can use it:
+The `Security_helper.php` provides functions to clean and validate user input data. Here is how you can use it:
 xss_clean, clean_input, uri_security, url_slug, redirect, base_url
 1. Load the helper in your controller:
     ```php
@@ -1337,11 +1337,11 @@ xss_clean, clean_input, uri_security, url_slug, redirect, base_url
 
 ### Cross-Site Request Forgery (CSRF) Protection
 
-PHP-Fast has built-in support for CSRF protection, helping to prevent unauthorized commands from being transmitted via your authenticated sessions. The framework can generate and verify CSRF tokens for forms.
+PHP-Fast has built-in support for CSRF protection, helping to prevent unauthorized Commands from being transmitted via your authenticated sessions. The framework can generate and verify CSRF tokens for forms.
 
 #### Enabling CSRF Protection
 
-1. Open the `config.php` file in the `application/config` directory.
+1. Open the `config.php` file in the `application/Config` directory.
 2. Add or update the `security` configuration to include CSRF settings:
     ```php
     'security' => [
@@ -1511,7 +1511,7 @@ This command will execute all test files located in the `tests` directory. You c
 
 ### 16.2 Integration Testing
 
-Integration testing involves testing the interaction between different components of the application, such as models and controllers. With PHP-Fast, you can create integration tests to verify that various parts of your application work together seamlessly.
+Integration testing involves testing the interaction between different components of the application, such as Models and Controllers. With PHP-Fast, you can create integration tests to verify that various parts of your application work together seamlessly.
 
 #### Writing Integration Tests
 
@@ -1581,7 +1581,7 @@ Deploying your PHP-Fast application to a production environment involves several
 ### Best Practices
 
 1. **Set Environment to Production**
-    - In `application/config/config.php`, set the `environment` key to `production`. This disables debugging and activates production-specific configurations.
+    - In `application/Config/Config.php`, set the `environment` key to `production`. This disables debugging and activates production-specific configurations.
     ```php
     'app' => [
         'debug' => false,

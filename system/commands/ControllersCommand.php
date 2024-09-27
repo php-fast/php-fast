@@ -7,7 +7,7 @@ class ControllersCommand {
      * Create a new controller file
      */
     public function create($name) {
-        $controllerPath = ROOT_PATH . '/application/controllers/' . ucfirst($name) . 'Controller.php';
+        $controllerPath = ROOT_PATH . '/application/Controllers/' . ucfirst($name) . 'Controller.php';
 
         // Check if controller already exists
         if (file_exists($controllerPath)) {

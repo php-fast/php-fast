@@ -7,15 +7,15 @@ use Exception;
 if (!defined('ROOT_PATH')) {
     exit('No direct access allowed.');
 }
-// Load core_helper.php để có thể sử dụng hàm load_helpers
-require_once ROOT_PATH . '/system/helpers/core_helper.php';
+// Load Core_helper.php để có thể sử dụng hàm load_helpers
+require_once ROOT_PATH . '/system/Helpers/Core_helper.php';
 
 class Bootstrap {
 
     protected $routes;
 
     public function __construct() {
-        load_helpers(['uri', 'security']); // Load các helper như uri_helper, security_helper
+        load_helpers(['uri', 'security']); // Load các helper như Uri_helper, Security_helper
         $appConfig = config('app');
         if (!empty($appConfig['app_timezone'])) {
             date_default_timezone_set($appConfig['app_timezone']);
@@ -52,10 +52,10 @@ class Bootstrap {
         // Khởi tạo đối tượng Router
         $routes = $this->routes;
         // Load routes cho web
-        require_once ROOT_PATH . '/application/routes/web.php';
+        require_once ROOT_PATH . '/application/Routes/web.php';
         // Load routes cho API (nếu có)
-        if (file_exists(ROOT_PATH . '/application/routes/api.php')) {
-            require_once ROOT_PATH . '/application/routes/api.php';
+        if (file_exists(ROOT_PATH . '/application/Routes/api.php')) {
+            require_once ROOT_PATH . '/application/Routes/api.php';
         }
     }    
 

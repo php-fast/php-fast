@@ -14,7 +14,7 @@ class TableCommand {
      * Chạy Artisan Command để đồng bộ hóa schema
      */
     public function handle($tableName) {
-        $modelClass = "\\App\\models\\".ucfirst($tableName).'Model';
+        $modelClass = "\\App\\Models\\".ucfirst($tableName).'Model';
         // Khởi tạo model
         $model = new $modelClass();
         $table = $model->_table();

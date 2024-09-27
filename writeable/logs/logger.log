@@ -1,0 +1,2 @@
+[2024-09-27 15:22:42] ERROR: 404 - Router: /favicon.ico (GET) not found! in C:\laragon\www\phpfast.net\system\core\Bootstrap.php on line 69
+[2024-09-27 17:14:16] ERROR: 404 - Router: /favicon.ico (GET) not found! in C:\laragon\www\phpfast.net\system\Core\Bootstrap.php on line 69

@@ -12,7 +12,7 @@ define('WRITE_PATH', realpath(__DIR__ . '/../writeable/'));
 // Load autoload từ Composer
 require_once ROOT_PATH . '/vendor/autoload.php';
 // Load file Bootstrap để khởi động hệ thống
-require_once ROOT_PATH . '/system/core/Bootstrap.php';
+require_once ROOT_PATH . '/system/Core/Bootstrap.php';
 
 // Khởi động Bootstrap của framework
 $application = new \System\Core\Bootstrap();

@@ -3,7 +3,7 @@
 require __DIR__ . '/vendor/autoload.php';
 
 define('ROOT_PATH', realpath(__DIR__));
-require_once __DIR__ . '/system/helpers/core_helper.php';
+require_once __DIR__ . '/system/Helpers/Core_helper.php';
 
 // Load Command Classes
 use System\Commands\ControllersCommand;
@@ -11,7 +11,7 @@ use System\Commands\ModelsCommand;
 use System\Commands\TableCommand;
 
 // Get CLI arguments
-$command = $argv[1] ?? null;
+$command = strtolower($argv[1]) ?? null;
 $subCommand = $argv[2] ?? null;
 
 // Ensure a command is provided
@@ -43,7 +43,7 @@ switch ($command) {
         break;
 
     default:
-        echo "Invalid command. Available commands: controllers, models, table.\n";
+        echo "Invalid command. Available Commands: Controllers, Models, table.\n";
         break;
 }
 
