@@ -1,5 +1,5 @@
 <?php
-define('DEBUG_TIME', false); //bat la true neu muon DEBUG
+define('DEBUG_TIME', true); //bat la true neu muon DEBUG
 if (DEBUG_TIME){
     // Đo lường bắt đầu ngay từ khi framework bắt đầu khởi chạy
     define('START_TIME', microtime(true));
