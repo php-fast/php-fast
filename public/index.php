@@ -4,6 +4,9 @@ if (DEBUG_TIME){
     // Đo lường bắt đầu ngay từ khi framework bắt đầu khởi chạy
     define('START_TIME', microtime(true));
     define('START_MEMORY', memory_get_usage());
+    ini_set('display_errors', '1');
+    ini_set('display_startup_errors', '1');
+    error_reporting(E_ALL);
 }
 // Đường dẫn đến thư mục root của ứng dụng
 define('ROOT_PATH', realpath(__DIR__ . '/../'));

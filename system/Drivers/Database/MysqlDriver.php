@@ -24,7 +24,8 @@ class MysqlDriver extends Database {
         } catch (PDOException $e) {
             Logger::error('Connect MysqlDriver failed: ' . $e->getMessage(), $e->getFile(), $e->getLine());
             http_response_code(500);
-            echo "An unknown error has occurred. Lets check file logger.log";
+            echo 'Connect MysqlDriver failed: ' . $e->getMessage() . ' - '. $e->getFile() . ' at Line: '. $e->getLine();
+            //echo "An unknown error has occurred. Lets check file logger.log";
         }
     }
 

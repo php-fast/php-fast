@@ -1630,12 +1630,12 @@ Here are some key points to configure your application for production:
     ```
 
 .htaccess
-    ```apache
-    RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php/$1 [L]
-    ```
+	```apache
+	RewriteEngine On
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^(.*)$ index.php/$1 [L]
+	```
 
 - **Nginx**: Set up a server block for your application, pointing `root` to the `public/` directory.
     ```nginx

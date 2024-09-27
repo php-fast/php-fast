@@ -1,7 +1,7 @@
 <?php
 
 // Đăng ký các route cho phần web
-$routes->get('/', 'HomeController::index');
+$routes->get('/', 'MoviesController::index');
 $routes->get('product/(:num)/(:string)', 'ProductController::show:$1:$2');
 $routes->post('product/create', 'ProductController::create');
 $routes->put('product/update/(:num)', 'ProductController::update/$1');

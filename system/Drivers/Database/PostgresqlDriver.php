@@ -22,9 +22,10 @@ class PostgresqlDriver extends Database {
         }catch (AppException $e) {
             $e->handle();
         } catch (PDOException $e) {
-            Logger::error('Connect MysqlDriver failed: ' . $e->getMessage(), $e->getFile(), $e->getLine());
+            Logger::error('Connect Postgresql failed: ' . $e->getMessage(), $e->getFile(), $e->getLine());
             http_response_code(500);
-            echo "An unknown error has occurred. Lets check file logger.log";
+            echo 'Connect Postgresql failed: ' . $e->getMessage() . ' - '. $e->getFile() . ' at Line: '. $e->getLine();
+            //echo "An unknown error has occurred. Lets check file logger.log";
         }
         //  catch (PDOException $e) {
         //     throw new \Exception('Kết nối PostgreSQL thất bại: ' . $e->getMessage());
